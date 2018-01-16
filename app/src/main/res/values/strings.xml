@@ -1,6 +1,11 @@
 <resources>
-    <string name="app_name">DreamMediaTechAPP</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="app_name">圆梦共享教育传媒</string>
+    <string name="title_home">主页</string>
+    <string name="title_categories">视频分类</string>
+    <string name="title_media">圆梦传媒</string>
+    <string name="title_gift">礼包</string>
+    <string name="title_information">个人中心</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

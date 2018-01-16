@@ -1,5 +1,9 @@
 package com.example.admin.dreammediatechapp.common;
 
+/**
+ * Created by Admin on 2018/1/16.
+ */
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -19,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.media.IRenderView;
@@ -57,7 +60,7 @@ public class PlayerManager {
      */
     public static final String SCALETYPE_4_3="4:3";
 
-    private Activity activity;
+    private final Activity activity;
     private final IjkVideoView videoView;
     private final AudioManager audioManager;
     private final int mMaxVolume;
@@ -130,7 +133,7 @@ public class PlayerManager {
     private boolean instantSeeking;
     private boolean isDragging;
 
-    public PlayerManager() {
+    public PlayerManager(final Activity activity) {
         try {
             IjkMediaPlayer.loadLibrariesOnce(null);
             IjkMediaPlayer.native_profileBegin("libijkplayer.so");
