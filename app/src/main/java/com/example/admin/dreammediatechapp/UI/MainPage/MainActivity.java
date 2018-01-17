@@ -29,34 +29,32 @@ public class MainActivity extends AppCompatActivity implements
     private FragmentPagerAdapter mAdpater;//Fragement适配器
     private List<Fragment> mFragment;//Fragment集合
     private MenuItem menuItem;
-    private BottomNavigationView bottomNavigationView;//底部导航栏
     private ViewPager mViewPager;
+    private BottomNavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //隐藏标题栏
+        if (getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
+
 
         initData();
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
     }
-
-
-
-
-
-
     /**
      * 初始化
      */
     public void initData(){
 
-        mViewPager=(ViewPager)findViewById(R.id.viewpager);
 
-        BottomNavigationView navigationView=(BottomNavigationView)findViewById(R.id.navigation) ;
-        navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        mViewPager=(ViewPager)findViewById(R.id.viewpager);
+        navigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);//添加底部导航栏切换监听
 
         mFragment=new ArrayList<>();
         //添加Ftagment
@@ -67,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements
         mFragment.add(new InformationFragment());
 
 
+        /**
+         * 初始化FragmmentPageAdapter
+         */
         mAdpater=new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -79,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
 
+        /**
+         * 初始化ViewPager
+         */
         mViewPager.setAdapter(mAdpater);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -92,9 +96,9 @@ public class MainActivity extends AppCompatActivity implements
                     menuItem.setChecked(false);
 
                 }else{
-                    bottomNavigationView.getMenu().getItem(0).setChecked(false);
+                    navigationView.getMenu().getItem(0).setChecked(false);
                 }
-                menuItem=bottomNavigationView.getMenu().getItem(position);
+                menuItem= navigationView.getMenu().getItem(position);
                 menuItem.setChecked(true);
 
             }
@@ -106,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    /**
+     * 底部导航栏切换操作
+     */
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
