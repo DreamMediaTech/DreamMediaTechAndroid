@@ -14,6 +14,7 @@ import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.common.NoScrollViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements
     private FragmentPagerAdapter mAdpater;//Fragement适配器
     private List<Fragment> mFragment;//Fragment集合
     private MenuItem menuItem;
-    private ViewPager mViewPager;
+    private NoScrollViewPager mViewPager;
     private BottomNavigationView navigationView;
 
     @Override
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements
     public void initData(){
 
 
-        mViewPager=(ViewPager)findViewById(R.id.viewpager);
+        mViewPager=(NoScrollViewPager) findViewById(R.id.viewpager);
         navigationView = (BottomNavigationView) findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);//添加底部导航栏切换监听
 
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
 
             }
 

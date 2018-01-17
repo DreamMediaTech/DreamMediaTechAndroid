@@ -45,4 +45,6 @@ dependencies {
     compile(name: 'ijkplayer-java-release', ext: 'aar')
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.okio:okio:1.5.0'
+    compile 'com.jude:rollviewpager:1.2.9'
+
 }

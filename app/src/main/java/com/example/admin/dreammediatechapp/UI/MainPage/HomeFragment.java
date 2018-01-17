@@ -1,14 +1,28 @@
 package com.example.admin.dreammediatechapp.UI.MainPage;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ImageFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 
+import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter;
 import com.example.admin.dreammediatechapp.R;
+import com.jude.rollviewpager.RollPagerView;
+import com.jude.rollviewpager.adapter.StaticPagerAdapter;
+import com.jude.rollviewpager.hintview.ColorPointHintView;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +37,10 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private RollPagerView mRollPageViewPager;
+    private RecyclerView mRecyclerView;
+    private List<Map<String,Object>> video_item;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -64,8 +82,12 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view =inflater.inflate(R.layout.fragment_home, container, false);
+        mRollPageViewPager=view.findViewById(R.id.adRoller);
+        mRecyclerView=view.findViewById(R.id.recommendList);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        RollPager();
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,5 +127,57 @@ public class HomeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void RollPager(){
+        //设置播放时间间隔
+        mRollPageViewPager.setPlayDelay(3000);
+        //设置透明度
+        mRollPageViewPager.setAnimationDurtion(500);
+        //设置适配器
+        mRollPageViewPager.setAdapter(new TestNormalAdapter());
+        //设置圆点指示器颜色
+        mRollPageViewPager.setHintView(new ColorPointHintView(getContext(), Color.BLACK,Color.BLUE));
+        mRollPageViewPager.setHintAlpha(1);
+
+
+    }
+
+
+    private class TestNormalAdapter extends StaticPagerAdapter {
+        private int[] img={
+                R.mipmap.adtest1,
+                R.mipmap.adtest2,
+                R.mipmap.adtest3,
+        };
+
+        @Override
+        public View getView(ViewGroup container, int position) {
+            ImageView imageView=new ImageView(container.getContext());
+            imageView.setImageResource(img[position]);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            return imageView;
+        }
+
+        @Override
+        public int getCount() {
+            return img.length;
+        }
+    }
+/*
+    public  void getVideoList(){
+        VideoListAdapter videoListAdapter=new VideoListAdapter();
+        video_item=videoListAdapter.getData();
+        SimpleAdapter adapter = new SimpleAdapter(getActivity(),video_item,R.layout.video_list_layout,
+                new String[]{"video_cover","video_title","video_owner","video_categories","video_watch"},
+                new int[]{R.id.video_list_cover,R.id.video_list_title,R.id.video_list_owner,R.id.video_list_categories,R.id.video_list_watch});
+        mRecyclerView.setAdapter(adapter);
+    }
+    */
+
+    public initRecycle(){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
     }
 }
