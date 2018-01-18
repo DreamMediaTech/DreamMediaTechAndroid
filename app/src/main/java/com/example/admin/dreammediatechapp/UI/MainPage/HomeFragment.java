@@ -1,28 +1,34 @@
 package com.example.admin.dreammediatechapp.UI.MainPage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.ImageFormat;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 
-import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter;
+import android.widget.ImageView;
+
+import android.widget.TextView;
+
+import com.example.admin.dreammediatechapp.Entities.User;
+import com.example.admin.dreammediatechapp.Entities.Video;
+import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.MediaPage.VideoPlayActivity;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,9 +43,12 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
     private RollPagerView mRollPageViewPager;
     private RecyclerView mRecyclerView;
-    private List<Map<String,Object>> video_item;
+
+   private List<Video> videoList = new ArrayList<>();
+
 
 
     // TODO: Rename and change types of parameters
@@ -73,9 +82,27 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        for (int i = 1;i<10;i++){
+            Video video=new Video();
+
+            User user=new User();
+            user.setuName("第"+i+"个作者");
+            video.setAuthor(user);
+            video.setvTitle("第"+i+"个视频");
+            video.setvNum(100);
+            VideoType videoType=new VideoType();
+            videoType.setVtName("分类一");
+            video.setFirstType(videoType);
+            video.setvNum(111*i);
+            videoList.add(video);
+        }
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
+
+
         }
     }
 
@@ -84,8 +111,9 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_home, container, false);
         mRollPageViewPager=view.findViewById(R.id.adRoller);
-        mRecyclerView=view.findViewById(R.id.recommendList);
-        // Inflate the layout for this fragment
+        mRecyclerView=(RecyclerView) view.findViewById(R.id.recommendList);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(new VideoAdapter());
         RollPager();
         return view;
     }
@@ -165,19 +193,62 @@ public class HomeFragment extends Fragment {
             return img.length;
         }
     }
-/*
-    public  void getVideoList(){
-        VideoListAdapter videoListAdapter=new VideoListAdapter();
-        video_item=videoListAdapter.getData();
-        SimpleAdapter adapter = new SimpleAdapter(getActivity(),video_item,R.layout.video_list_layout,
-                new String[]{"video_cover","video_title","video_owner","video_categories","video_watch"},
-                new int[]{R.id.video_list_cover,R.id.video_list_title,R.id.video_list_owner,R.id.video_list_categories,R.id.video_list_watch});
-        mRecyclerView.setAdapter(adapter);
-    }
-    */
 
-    public initRecycle(){
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+
+    private class VideoHolder extends RecyclerView.ViewHolder {
+        private Video mVideo;
+        private ConstraintLayout item_layout;
+        private ImageView video_cover;
+        private TextView video_title,video_owner,video_categories,video_watch;
+
+
+
+        public VideoHolder(LayoutInflater inflater, ViewGroup parent) {
+        super(inflater.inflate(R.layout.video_list_layout,parent,false));
+
+
+        video_cover=(ImageView)itemView.findViewById(R.id.video_list_cover);
+        video_title=(TextView)itemView.findViewById(R.id.video_list_title);
+        video_owner=(TextView)itemView.findViewById(R.id.video_list_owner);
+        video_categories=(TextView)itemView.findViewById(R.id.video_list_categories);
+        video_watch=(TextView)itemView.findViewById(R.id.video_list_watch);
+
+        video_cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent play = new Intent(getActivity().getApplicationContext(), VideoPlayActivity.class);
+                Bundle bundle = new Bundle();
+                startActivity(play);
+
+            }
+        });
+    }
+}
+
+
+
+    private class VideoAdapter extends RecyclerView.Adapter<VideoHolder> {
+        @Override
+        public VideoHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            return new VideoHolder(inflater,viewGroup);
+        }
+
+        @Override
+        public void onBindViewHolder(VideoHolder holder, int i) {
+            Video video = videoList.get(i);
+            holder.mVideo=video;
+            holder.video_cover.setImageResource(R.mipmap.ic_launcher);
+            holder.video_title.setText(video.getvTitle());
+            holder.video_owner.setText(video.getAuthor().getuName());
+            holder.video_categories.setText(video.getFirstType().getVtName());
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return videoList.size();
+        }
     }
 }

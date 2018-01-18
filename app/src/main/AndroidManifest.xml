@@ -20,7 +20,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".UI.VideoPlayActivity">
+        <activity android:name=".UI.MediaPage.VideoPlayActivity">
 
         </activity>
     </application>
