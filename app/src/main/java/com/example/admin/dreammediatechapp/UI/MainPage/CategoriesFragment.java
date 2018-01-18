@@ -3,12 +3,19 @@ package com.example.admin.dreammediatechapp.UI.MainPage;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.admin.dreammediatechapp.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +36,12 @@ public class CategoriesFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private TabLayout mTab;
+    private ViewPager mViewPager;
+    private List<String> tabIndicators;
+    private List<Fragment> tabFragments;
+    private ContentPagerAdapter contentAdapter;
 
     public CategoriesFragment() {
         // Required empty public constructor
@@ -65,7 +78,17 @@ public class CategoriesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_categories, container, false);
+        View view =inflater.inflate(R.layout.fragment_categories, container, false);
+        mTab=(TabLayout)view.findViewById(R.id.categories_title);
+        mTab.setTabMode(TabLayout.MODE_SCROLLABLE);
+        mTab.setTabTextColors(ContextCompat.getColor(getContext(), R.color.gray), ContextCompat.getColor(getContext(), R.color.white));
+        mTab.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.white));
+        ViewCompat.setElevation(mTab,10);
+        mTab.setupWithViewPager(mViewPager);
+        mViewPager=(ViewPager)view.findViewById(R.id.categories_content);
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,5 +128,20 @@ public class CategoriesFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class ContentPagerAdapter {
+    }
+    private void initContent(){
+        tabIndicators = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            tabIndicators.add("Tab " + i);
+        }
+        tabFragments = new ArrayList<>();
+        for (String s : tabIndicators) {
+            tabFragments.add(TabContentFragment.newInstance(s));
+        }
+        contentAdapter = new ContentPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(contentAdapter);
     }
 }
