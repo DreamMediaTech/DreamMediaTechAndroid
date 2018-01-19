@@ -6,4 +6,6 @@
 
     <dimen name="RollerViewPagerMargin">10dp</dimen>
     <dimen name="video_list_title">20dp</dimen>
+    <dimen name="top">10dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
 </resources>

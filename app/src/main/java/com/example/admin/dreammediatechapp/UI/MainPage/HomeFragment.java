@@ -23,6 +23,7 @@ import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.UI.MediaPage.VideoPlayActivity;
+import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
@@ -113,6 +114,7 @@ public class HomeFragment extends Fragment {
         mRollPageViewPager=view.findViewById(R.id.adRoller);
         mRecyclerView=(RecyclerView) view.findViewById(R.id.recommendList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.addItemDecoration(new SimpleDividerDecoration(getActivity()));
         mRecyclerView.setAdapter(new VideoAdapter());
         RollPager();
         return view;

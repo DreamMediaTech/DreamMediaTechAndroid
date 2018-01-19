@@ -3,21 +3,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.admin.dreammediatechapp.UI.MainPage.CategoriesFragment">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@color/colorPrimary"
+         android:orientation="vertical"
+         android:elevation="5dp">
+         <SearchView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_margin="10dp"
+             android:background="@color/white"
+             android:elevation="5dp"></SearchView>
+         <android.support.design.widget.TabLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:id="@+id/categories_title"
+             android:background="@color/colorPrimary">
+         </android.support.design.widget.TabLayout>
+     </LinearLayout>
 
-    <!-- TODO: Update blank fragment layout -->
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/categories_title"
-        android:background="@color/colorPrimary">
+     <android.support.v4.view.ViewPager
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:id="@+id/categories_content">
 
-    </TableLayout>
-
-    <android.support.v4.view.ViewPager
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/categories_content">
-
-    </android.support.v4.view.ViewPager>
-
+     </android.support.v4.view.ViewPager>
+</LinearLayout>
 </FrameLayout>

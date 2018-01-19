@@ -1,38 +1,23 @@
-package com.example.admin.dreammediatechapp.UI.MainPage;
+package com.example.admin.dreammediatechapp;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TabHost;
-import android.widget.TableLayout;
 
-import com.example.admin.dreammediatechapp.R;
-import com.example.admin.dreammediatechapp.oneFragment;
-import com.example.admin.dreammediatechapp.threeFragment;
-import com.example.admin.dreammediatechapp.twoFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link CategoriesFragment.OnFragmentInteractionListener} interface
+ * {@link oneFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link CategoriesFragment#newInstance} factory method to
+ * Use the {@link oneFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CategoriesFragment extends Fragment {
+public class oneFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -44,14 +29,7 @@ public class CategoriesFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private TabLayout mTab;
-    private ViewPager mViewPager;
-    private List<String> tabIndicators;
-    private List<Fragment> tabFragments;
-    private ContentPagerAdapter contentAdapter;
-    private Fragment one,two,three;
-
-    public CategoriesFragment() {
+    public oneFragment() {
         // Required empty public constructor
     }
 
@@ -61,11 +39,11 @@ public class CategoriesFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment CategoriesFragment.
+     * @return A new instance of fragment oneFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CategoriesFragment newInstance(String param1, String param2) {
-        CategoriesFragment fragment = new CategoriesFragment();
+    public static oneFragment newInstance(String param1, String param2) {
+        oneFragment fragment = new oneFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -80,46 +58,13 @@ public class CategoriesFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =inflater.inflate(R.layout.fragment_categories, container, false);
-
-        mViewPager=(ViewPager)view.findViewById(R.id.categories_content);
-        mTab=(TabLayout)view.findViewById(R.id.categories_title);
-        mTab.setTabMode(TabLayout.MODE_SCROLLABLE);
-        mTab.setTabTextColors(ContextCompat.getColor(getContext(), R.color.gray), ContextCompat.getColor(getContext(), R.color.gray));
-        mTab.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.white));
-        mTab.setupWithViewPager(mViewPager);
-
-        tabIndicators = new ArrayList<>();
-        for (int i =1;i<4;i++){
-            tabIndicators.add("视频分类");
-
-        }
-
-
-        tabFragments = new ArrayList<>();
-            tabFragments.add(new oneFragment());
-            tabFragments.add(new twoFragment());
-            tabFragments.add(new threeFragment());
-        contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
-        mViewPager.setAdapter(contentAdapter);
-
-        for(int i=1;i<tabIndicators.size();i++){
-            TabLayout.Tab itemTab = mTab.getTabAt(i);
-            if (itemTab!=null){
-                itemTab.setText("视频分类"+i);
-            }
-            mTab.getTabAt(0).getText();
-        }
-
-
-        return view;
+        return inflater.inflate(R.layout.fragment_one, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -146,7 +91,6 @@ public class CategoriesFragment extends Fragment {
         mListener = null;
     }
 
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -160,24 +104,5 @@ public class CategoriesFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    private class ContentPagerAdapter extends FragmentPagerAdapter{
-        public ContentPagerAdapter(FragmentManager fm){
-            super(fm);
-        }
-        @Override
-        public Fragment getItem(int position) {
-            return tabFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return tabIndicators.size();
-        }
-
-
-
-
     }
 }

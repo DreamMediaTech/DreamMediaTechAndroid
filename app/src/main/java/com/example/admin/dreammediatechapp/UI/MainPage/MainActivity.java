@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.common.NoScrollViewPager;
+import com.example.admin.dreammediatechapp.oneFragment;
+import com.example.admin.dreammediatechapp.threeFragment;
+import com.example.admin.dreammediatechapp.twoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements
         MediaFragment.OnFragmentInteractionListener,
         CategoriesFragment.OnFragmentInteractionListener,
         GiftFragment.OnFragmentInteractionListener,
-        InformationFragment.OnFragmentInteractionListener {
+        InformationFragment.OnFragmentInteractionListener,
+        oneFragment.OnFragmentInteractionListener, twoFragment.OnFragmentInteractionListener,threeFragment.OnFragmentInteractionListener{
 
 
     private FragmentPagerAdapter mAdpater;//Fragement适配器
