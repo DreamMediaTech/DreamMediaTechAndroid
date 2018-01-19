@@ -97,20 +97,16 @@ public class CategoriesFragment extends Fragment {
         mTab.setupWithViewPager(mViewPager);
 
         tabIndicators = new ArrayList<>();
-        for (int i =1;i<4;i++){
+        tabFragments = new ArrayList<>();
+        for (int i =0;i<9;i++){
             tabIndicators.add("视频分类");
+            tabFragments.add(new oneFragment());
 
         }
-
-
-        tabFragments = new ArrayList<>();
-            tabFragments.add(new oneFragment());
-            tabFragments.add(new twoFragment());
-            tabFragments.add(new threeFragment());
         contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(contentAdapter);
 
-        for(int i=1;i<tabIndicators.size();i++){
+        for(int i=0;i<tabIndicators.size();i++){
             TabLayout.Tab itemTab = mTab.getTabAt(i);
             if (itemTab!=null){
                 itemTab.setText("视频分类"+i);

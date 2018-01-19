@@ -1,14 +1,24 @@
 package com.example.admin.dreammediatechapp.UI.MainPage;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.example.admin.dreammediatechapp.Entities.IntegralPackage;
+import com.example.admin.dreammediatechapp.Holder.GiftHolder;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +39,8 @@ public class GiftFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private RecyclerView mRecyclerView;
+    private List<IntegralPackage> giftList=new ArrayList<>();
 
     public GiftFragment() {
         // Required empty public constructor
@@ -59,13 +71,23 @@ public class GiftFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        for (int i=1;i<5;i++){
+            IntegralPackage integralPackage=new IntegralPackage();
+            giftList.add(integralPackage);
+
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view=inflater.inflate(R.layout.fragment_gift, container, false);
+        mRecyclerView = (RecyclerView)view.findViewById(R.id.gift_list);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mRecyclerView.setAdapter(new GiftAdapter());
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_gift, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,5 +127,41 @@ public class GiftFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public class GiftHolder extends RecyclerView.ViewHolder{
+        private IntegralPackage integralPackage;
+        private ImageView gift_image;
+
+        public GiftHolder(LayoutInflater inflater, ViewGroup parent) {
+            super(inflater.inflate(R.layout.gift_item_layout,parent,false));
+
+            gift_image=(ImageView)itemView.findViewById(R.id.gift_image);
+
+        }
+
+
+
+    }
+
+    private class GiftAdapter extends RecyclerView.Adapter<GiftHolder> {
+
+        @Override
+        public GiftHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            return new GiftHolder(inflater,viewGroup);
+        }
+
+        @Override
+        public void onBindViewHolder(GiftHolder holder, int i) {
+            IntegralPackage integralPackage=giftList.get(i);
+            holder.integralPackage=integralPackage;
+            holder.gift_image.setImageResource(R.mipmap.adtest3);
+        }
+
+        @Override
+        public int getItemCount() {
+            return giftList.size();
+        }
     }
 }

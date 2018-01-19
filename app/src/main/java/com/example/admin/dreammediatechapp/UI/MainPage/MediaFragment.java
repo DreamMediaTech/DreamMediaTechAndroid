@@ -1,9 +1,6 @@
 package com.example.admin.dreammediatechapp.UI.MainPage;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -18,7 +15,6 @@ import android.widget.TextView;
 
 import com.example.admin.dreammediatechapp.Entities.Article;
 import com.example.admin.dreammediatechapp.R;
-import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +137,7 @@ public class MediaFragment extends Fragment {
 
 
         public ArticleHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.article_layout,parent,false));
+            super(inflater.inflate(R.layout.article_item_layout,parent,false));
 
             article_cover = itemView.findViewById(R.id.article_cover);
             article_time = itemView.findViewById(R.id.article_time);
@@ -162,7 +158,7 @@ public class MediaFragment extends Fragment {
         public void onBindViewHolder(ArticleHolder holder, int i) {
             Article article=article_list.get(i);
             holder.article=article;
-            holder.article_cover.setImageResource(R.mipmap.ic_launcher);
+            holder.article_cover.setImageResource(R.color.colorPrimary);
             holder.article_title.setText(article.getaTitle());
             holder.article_time.setText(article.getaTime());
 
