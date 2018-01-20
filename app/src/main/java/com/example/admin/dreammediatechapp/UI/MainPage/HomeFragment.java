@@ -241,7 +241,7 @@ public class HomeFragment extends Fragment {
         public void onBindViewHolder(VideoHolder holder, int i) {
             Video video = videoList.get(i);
             holder.mVideo=video;
-            holder.video_cover.setImageResource(R.mipmap.ic_launcher);
+            holder.video_cover.setImageResource(R.mipmap.adtest3);
             holder.video_title.setText(video.getvTitle());
             holder.video_owner.setText(video.getAuthor().getuName());
             holder.video_categories.setText(video.getFirstType().getVtName());

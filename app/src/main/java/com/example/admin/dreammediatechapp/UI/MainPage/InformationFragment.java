@@ -4,10 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
+import com.example.admin.dreammediatechapp.Adapter.InformationAdapter;
+import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
 import com.example.admin.dreammediatechapp.R;
 
 /**
@@ -30,7 +36,10 @@ public class InformationFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public InformationFragment() {
+    private RecyclerView mRecyclerView,mRecyclerView2;
+
+    public static InformationFragment newInstance() {
+        return new InformationFragment();
         // Required empty public constructor
     }
 
@@ -64,8 +73,13 @@ public class InformationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view=inflater.inflate(R.layout.fragment_information, container, false);
+        mRecyclerView = (RecyclerView)view.findViewById(R.id.info_recycle);
+        mRecyclerView2 = (RecyclerView)view.findViewById(R.id.shopping_recycle);
+        initRecyclerView();
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_information, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -106,4 +120,37 @@ public class InformationFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+    public void initRecyclerView(){
+        //个人中心
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4));
+        InformationAdapter informationAdapter = new InformationAdapter(mRecyclerView);
+        mRecyclerView.setAdapter(informationAdapter);
+        informationAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
+                switch (position){
+                    case 0:
+                        Toast.makeText(getActivity(),"你点击了个人信息",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        //商城
+        mRecyclerView2.setHasFixedSize(true);
+        mRecyclerView2.setLayoutManager(new GridLayoutManager(getActivity(),4));
+        ShoppingAdapter shoppingAdapter = new ShoppingAdapter(mRecyclerView2);
+        mRecyclerView2.setAdapter(shoppingAdapter);
+        shoppingAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
+                switch(position){
+                    
+                }
+            }
+        });
+
+
+    }
+
 }
