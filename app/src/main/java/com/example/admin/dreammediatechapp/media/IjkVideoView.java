@@ -935,5 +935,18 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
             }
         }
     }
+    public void onPause() {
+        release(false);
+    }
+
+    public void onResume() {
+        openVideo();
+    }
+    public void setPlayerRotation(int rotation) {
+        mVideoRotationDegree = rotation;
+        if (mRenderView != null) {
+            mRenderView.setVideoRotation(mVideoRotationDegree);
+        }
+    }
 }
 

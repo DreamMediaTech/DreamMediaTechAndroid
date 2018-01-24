@@ -131,7 +131,7 @@ public class MediaFragment extends Fragment {
     private class ArticleHolder extends RecyclerView.ViewHolder{
 
        private Article article;
-       private ConstraintLayout item_layout;
+      // private ConstraintLayout item_layout;
        private ImageView article_cover;
        private TextView article_title,article_time;
 
@@ -158,7 +158,7 @@ public class MediaFragment extends Fragment {
         public void onBindViewHolder(ArticleHolder holder, int i) {
             Article article=article_list.get(i);
             holder.article=article;
-            holder.article_cover.setImageResource(R.color.colorPrimary);
+            holder.article_cover.setImageResource(R.mipmap.banner2);
             holder.article_title.setText(article.getaTitle());
             holder.article_time.setText(article.getaTime());
 

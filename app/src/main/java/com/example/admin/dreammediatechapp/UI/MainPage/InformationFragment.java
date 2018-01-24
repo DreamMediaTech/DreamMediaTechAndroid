@@ -1,20 +1,26 @@
 package com.example.admin.dreammediatechapp.UI.MainPage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
 import com.example.admin.dreammediatechapp.Adapter.InformationAdapter;
 import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.InformationPage.UserInfoActivity;
+import com.example.admin.dreammediatechapp.UI.LoginPage.LoginActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +43,8 @@ public class InformationFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private RecyclerView mRecyclerView,mRecyclerView2;
+    private ImageView user_image;
+    private TextView user_name;
 
     public static InformationFragment newInstance() {
         return new InformationFragment();
@@ -76,6 +84,22 @@ public class InformationFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_information, container, false);
         mRecyclerView = (RecyclerView)view.findViewById(R.id.info_recycle);
         mRecyclerView2 = (RecyclerView)view.findViewById(R.id.shopping_recycle);
+        user_image = view.findViewById(R.id.user_image);
+        user_name = view.findViewById(R.id.user_name);
+        user_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+            }
+        });
+        user_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+            }
+        });
+
+
         initRecyclerView();
 
         // Inflate the layout for this fragment
@@ -131,7 +155,7 @@ public class InformationFragment extends Fragment {
             public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
                 switch (position){
                     case 0:
-                        Toast.makeText(getActivity(),"你点击了个人信息",Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(getContext(), UserInfoActivity.class));
                 }
             }
         });
@@ -145,12 +169,23 @@ public class InformationFragment extends Fragment {
             @Override
             public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
                 switch(position){
-                    
+
                 }
             }
         });
 
+        View.OnClickListener onClickListener= new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                int id= view.getId();
+                switch (id){
+
+                }
+            }
+        };
+
 
     }
-
 }
+

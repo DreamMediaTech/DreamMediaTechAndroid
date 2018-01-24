@@ -1,5 +1,7 @@
 package com.example.admin.dreammediatechapp.UI.MainPage;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,6 +9,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.PermissionChecker;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -36,6 +39,24 @@ public class MainActivity extends AppCompatActivity implements
     private MenuItem menuItem;
     private NoScrollViewPager mViewPager;
     private BottomNavigationView navigationView;
+    private int mNoPermissionIndex = 0;
+    private final int PERMISSION_REQUEST_CODE = 1;
+    private final String[] permissionManifest = {
+            Manifest.permission.CAMERA,
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+    private final int[] noPermissionTip = {
+            R.string.no_camera_permission,
+            R.string.no_record_bluetooth_permission,
+            R.string.no_record_audio_permission,
+            R.string.no_read_phone_state_permission,
+            R.string.no_write_external_storage_permission,
+            R.string.no_read_external_storage_permission,
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +67,28 @@ public class MainActivity extends AppCompatActivity implements
             getSupportActionBar().hide();
         }
 
+        permissionCheck();
 
         initData();
 
 
+    }
+    private boolean permissionCheck() {
+        int permissionCheck = PackageManager.PERMISSION_GRANTED;
+        String permission;
+        for (int i = 0; i < permissionManifest.length; i++) {
+            permission = permissionManifest[i];
+            mNoPermissionIndex = i;
+            if (PermissionChecker.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionCheck = PackageManager.PERMISSION_DENIED;
+            }
+        }
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        } else {
+            return true;
+        }
     }
     /**
      * 初始化
@@ -60,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements
         mViewPager=(NoScrollViewPager) findViewById(R.id.viewpager);
         navigationView = (BottomNavigationView) findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);//添加底部导航栏切换监听
+        BottomNavigationViewHelper.disableShiftMode(navigationView);//去除底部导航栏动画
 
         mFragment=new ArrayList<>();
         //添加Ftagment

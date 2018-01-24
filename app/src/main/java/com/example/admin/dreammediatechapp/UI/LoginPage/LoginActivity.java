@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -328,7 +329,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Intent start = new Intent(LoginActivity.this, MainActivity.class);
 
             if (success) {
-                startActivity(start);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -360,5 +360,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         }
     };
+    //监听标题栏
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
 

@@ -9,7 +9,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,7 @@ import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
-import com.example.admin.dreammediatechapp.UI.MediaPage.VideoPlayActivity;
+import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
 import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
@@ -176,9 +175,9 @@ public class HomeFragment extends Fragment {
 
     private class TestNormalAdapter extends StaticPagerAdapter {
         private int[] img={
-                R.mipmap.adtest1,
-                R.mipmap.adtest2,
-                R.mipmap.adtest3,
+                R.mipmap.banner1,
+                R.mipmap.banner2,
+                R.mipmap.banner3,
         };
 
         @Override
@@ -219,7 +218,7 @@ public class HomeFragment extends Fragment {
         video_cover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent play = new Intent(getActivity().getApplicationContext(), VideoPlayActivity.class);
+                Intent play = new Intent(getActivity().getApplicationContext(), HPlayerActivity.class);
                 Bundle bundle = new Bundle();
                 startActivity(play);
 
@@ -241,7 +240,7 @@ public class HomeFragment extends Fragment {
         public void onBindViewHolder(VideoHolder holder, int i) {
             Video video = videoList.get(i);
             holder.mVideo=video;
-            holder.video_cover.setImageResource(R.mipmap.adtest3);
+            holder.video_cover.setImageResource(R.mipmap.banner2);
             holder.video_title.setText(video.getvTitle());
             holder.video_owner.setText(video.getAuthor().getuName());
             holder.video_categories.setText(video.getFirstType().getVtName());

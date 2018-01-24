@@ -156,7 +156,7 @@ public class GiftFragment extends Fragment {
         public void onBindViewHolder(GiftHolder holder, int i) {
             IntegralPackage integralPackage=giftList.get(i);
             holder.integralPackage=integralPackage;
-            holder.gift_image.setImageResource(R.mipmap.adtest3);
+            holder.gift_image.setImageResource(R.mipmap.banner3);
         }
 
         @Override

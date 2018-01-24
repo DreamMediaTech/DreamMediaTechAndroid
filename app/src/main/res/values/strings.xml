@@ -37,4 +37,20 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="giraffe_player_url_empty">请指定播放视频的地址</string>
+    <string name="small_problem">出现了点小问题,稍后重试</string>
+    <string name="can_not_play">不能播放此视频</string>
+    <string name="not_support">播放器不支持此设备</string>
+
+    <!--权限检查-->
+    <string name="no_camera_permission">Camera usage is not permitted, please open first</string>
+    <string name="no_record_bluetooth_permission">Bluetooth is not permitted to record, please open first</string>
+    <string name="no_record_audio_permission">Audio is not permitted to record, please open first</string>
+    <string name="no_read_phone_state_permission">Phone state is not permitted to read, please opend first</string>
+    <string name="no_write_external_storage_permission">External storage is not permitted to write, please open first</string>
+    <string name="no_read_external_storage_permission">External storage is not permitted to read, please open first</string>
+
+    <!--个人中心-->
+    <string name="info_cautious">*支付宝账号的实名与真实姓名必须一致，否则提现将无法到账</string>
+    <string name="wx_account">绑定微信账号</string>
 </resources>
