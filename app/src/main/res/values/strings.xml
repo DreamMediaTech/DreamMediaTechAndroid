@@ -53,4 +53,7 @@
     <!--个人中心-->
     <string name="info_cautious">*支付宝账号的实名与真实姓名必须一致，否则提现将无法到账</string>
     <string name="wx_account">绑定微信账号</string>
+    <string name="buy_gift">购买礼包</string>
+    <string name="point_cash">积分提现</string>
+    <string name="point_change">积分转换</string>
 </resources>

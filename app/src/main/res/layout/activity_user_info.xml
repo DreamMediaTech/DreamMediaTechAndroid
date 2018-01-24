@@ -51,7 +51,8 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -60,7 +61,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/wx_account"
-                    android:text="@string/wx_account"/>
+                    android:text="@string/wx_account"
+                    android:layout_gravity="center"/>
             </LinearLayout>
 
 
@@ -159,6 +161,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
+        android:padding="3dp"
     android:background="@color/white"
     android:orientation="horizontal">
 
@@ -183,12 +186,13 @@
         android:background="@color/white"
         android:singleLine="true" />
 </LinearLayout>
-    <Button
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/info_cautious"
         android:gravity="right"
         android:textColor="@color/red"
+        android:layout_marginTop="3dp"
         />
     <Button
         android:layout_width="match_parent"

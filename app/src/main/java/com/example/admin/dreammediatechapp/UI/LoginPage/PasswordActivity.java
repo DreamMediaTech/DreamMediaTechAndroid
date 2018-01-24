@@ -41,7 +41,7 @@ public class PasswordActivity extends AppCompatActivity {
                 startActivity(changeToEmail);*/
             }
         });
-        final Button getphoneGetCode = (Button)findViewById(R.id.phone_get_code);
+        final Button getphoneGetCode = (Button)findViewById(R.id.password_get_code);
         getphoneGetCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

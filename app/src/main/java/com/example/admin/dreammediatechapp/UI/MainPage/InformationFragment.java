@@ -19,6 +19,7 @@ import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
 import com.example.admin.dreammediatechapp.Adapter.InformationAdapter;
 import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.InformationPage.PointActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.UserInfoActivity;
 import com.example.admin.dreammediatechapp.UI.LoginPage.LoginActivity;
 
@@ -156,6 +157,9 @@ public class InformationFragment extends Fragment {
                 switch (position){
                     case 0:
                         startActivity(new Intent(getContext(), UserInfoActivity.class));
+                        break;
+                    case 1:
+                        startActivity(new Intent(getContext(), PointActivity.class));
                 }
             }
         });
