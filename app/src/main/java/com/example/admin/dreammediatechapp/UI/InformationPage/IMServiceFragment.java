@@ -1,42 +1,36 @@
-package com.example.admin.dreammediatechapp.UI.MainPage;
+package com.example.admin.dreammediatechapp.UI.InformationPage;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.example.admin.dreammediatechapp.Entities.IntegralPackage;
-import com.example.admin.dreammediatechapp.Holder.GiftHolder;
 import com.example.admin.dreammediatechapp.R;
-import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link GiftFragment.OnFragmentInteractionListener} interface
+ * {@link IMServiceFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link GiftFragment#newInstance} factory method to
+ * Use the {@link IMServiceFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GiftFragment extends Fragment {
+public class IMServiceFragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private RecyclerView mRecyclerView;
-    private List<IntegralPackage> giftList=new ArrayList<>();
 
-    public GiftFragment() {
+    public IMServiceFragment() {
         // Required empty public constructor
     }
 
@@ -46,13 +40,14 @@ public class GiftFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment GiftFragment.
+     * @return A new instance of fragment IMServiceFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static GiftFragment newInstance(String param1, String param2) {
-        GiftFragment fragment = new GiftFragment();
+    public static IMServiceFragment newInstance(String param1, String param2) {
+        IMServiceFragment fragment = new IMServiceFragment();
         Bundle args = new Bundle();
-
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,23 +55,17 @@ public class GiftFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        for (int i=1;i<10;i++){
-            IntegralPackage integralPackage=new IntegralPackage();
-            giftList.add(integralPackage);
-
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_gift, container, false);
-        mRecyclerView = (RecyclerView)view.findViewById(R.id.gift_list);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
-
-        mRecyclerView.setAdapter(new GiftAdapter());
         // Inflate the layout for this fragment
-        return view;
+        return inflater.inflate(R.layout.fragment_im, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -116,41 +105,5 @@ public class GiftFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    public class GiftHolder extends RecyclerView.ViewHolder{
-        private IntegralPackage integralPackage;
-        private ImageView gift_image;
-
-        public GiftHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.gift_item_layout,parent,false));
-
-            gift_image=(ImageView)itemView.findViewById(R.id.gift_image);
-
-        }
-
-
-
-    }
-
-    private class GiftAdapter extends RecyclerView.Adapter<GiftHolder> {
-
-        @Override
-        public GiftHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
-            return new GiftHolder(inflater,viewGroup);
-        }
-
-        @Override
-        public void onBindViewHolder(GiftHolder holder, int i) {
-            IntegralPackage integralPackage=giftList.get(i);
-            holder.integralPackage=integralPackage;
-            holder.gift_image.setImageResource(R.mipmap.banner3);
-        }
-
-        @Override
-        public int getItemCount() {
-            return giftList.size();
-        }
     }
 }

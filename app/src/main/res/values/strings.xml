@@ -56,4 +56,9 @@
     <string name="buy_gift">购买礼包</string>
     <string name="point_cash">积分提现</string>
     <string name="point_change">积分转换</string>
+    <string name="update">版本更新</string>
+    <string name="clean">清除缓存</string>
+    <string name="about">关于我们</string>
+    <string name="advice">意见建议</string>
+    <string name="logout">退出登录</string>
 </resources>

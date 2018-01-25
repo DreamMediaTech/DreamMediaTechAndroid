@@ -19,7 +19,10 @@ import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
 import com.example.admin.dreammediatechapp.Adapter.InformationAdapter;
 import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.InformationPage.CustomerServiceActivity;
+import com.example.admin.dreammediatechapp.UI.InformationPage.MyShareActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.PointActivity;
+import com.example.admin.dreammediatechapp.UI.InformationPage.SettingsActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.UserInfoActivity;
 import com.example.admin.dreammediatechapp.UI.LoginPage.LoginActivity;
 
@@ -64,19 +67,12 @@ public class InformationFragment extends Fragment {
     public static InformationFragment newInstance(String param1, String param2) {
         InformationFragment fragment = new InformationFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -99,8 +95,6 @@ public class InformationFragment extends Fragment {
                 startActivity(new Intent(getActivity(), LoginActivity.class));
             }
         });
-
-
         initRecyclerView();
 
         // Inflate the layout for this fragment
@@ -160,6 +154,15 @@ public class InformationFragment extends Fragment {
                         break;
                     case 1:
                         startActivity(new Intent(getContext(), PointActivity.class));
+                        break;
+                    case 3:
+                        startActivity(new Intent(getContext(), MyShareActivity.class ));
+                        break;
+                    case 6:
+                        startActivity(new Intent(getContext(), SettingsActivity.class));
+                        break;
+                    case 7:
+                        startActivity(new Intent(getContext(), CustomerServiceActivity.class));
                 }
             }
         });

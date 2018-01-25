@@ -53,7 +53,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".UI.InformationPage.PointActivity"></activity>
+        <activity android:name=".UI.InformationPage.PointActivity" />
+        <activity android:name=".UI.InformationPage.MyShareActivity" />
+        <activity android:name=".UI.InformationPage.SettingsActivity" />
+        <activity android:name=".UI.InformationPage.CustomerServiceActivity"></activity>
     </application>
 
 </manifest>

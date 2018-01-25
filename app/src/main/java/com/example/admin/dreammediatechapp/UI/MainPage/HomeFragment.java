@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +19,9 @@ import android.widget.ImageView;
 
 import android.widget.TextView;
 
+import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
+import com.example.admin.dreammediatechapp.Adapter.HomeShortCutAdapter;
+import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
 import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
@@ -45,8 +50,8 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private RollPagerView mRollPageViewPager;
-    private RecyclerView mRecyclerView;
-
+    private RecyclerView mRecyclerView,shortcutRecyclerView;
+    private NestedScrollView nestedScrollView;
    private List<Video> videoList = new ArrayList<>();
 
 
@@ -111,11 +116,24 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_home, container, false);
         mRollPageViewPager=view.findViewById(R.id.adRoller);
+        RollPager();
+
+        nestedScrollView= view.findViewById(R.id.home_recyclerview);
+        nestedScrollView.setFocusable(true);
+        nestedScrollView.setFocusableInTouchMode(true);
+        nestedScrollView.requestFocus();
+        nestedScrollView.fullScroll(NestedScrollView.FOCUS_UP);
+        nestedScrollView.scrollTo(0,0);
+
+        shortcutRecyclerView=(RecyclerView) view.findViewById(R.id.home_shortcut);
+        shortcutInit();
+
         mRecyclerView=(RecyclerView) view.findViewById(R.id.recommendList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new SimpleDividerDecoration(getActivity()));
         mRecyclerView.setAdapter(new VideoAdapter());
-        RollPager();
+
+
         return view;
     }
 
@@ -158,6 +176,21 @@ public class HomeFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    public void shortcutInit(){
+        shortcutRecyclerView.setHasFixedSize(true);
+        shortcutRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4));
+
+        HomeShortCutAdapter homeShortCutAdapter = new HomeShortCutAdapter(shortcutRecyclerView);
+       shortcutRecyclerView.setAdapter(homeShortCutAdapter);
+        homeShortCutAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
+                switch (position){
+
+                }
+            }
+        });
+    }
     private void RollPager(){
         //设置播放时间间隔
         mRollPageViewPager.setPlayDelay(3000);
@@ -171,8 +204,6 @@ public class HomeFragment extends Fragment {
 
 
     }
-
-
     private class TestNormalAdapter extends StaticPagerAdapter {
         private int[] img={
                 R.mipmap.banner1,

@@ -2,14 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.admin.dreammediatechapp.oneFragment"
-    android:id="@+id/one">
+    tools:context="com.example.admin.dreammediatechapp.UI.InformationPage.IMServiceFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="one"
-        android:layout_marginTop="100dp"/>
+        android:text="IMService" />
 
 </FrameLayout>
