@@ -35,24 +35,4 @@
 
     </ScrollView>
 
-<LinearLayout
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="horizontal"
-android:layout_alignParentBottom="true"
-    >
-<EditText
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/comment_input"
-    android:layout_weight="0.5"/>
-<Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/send_button"
-
-    android:text="发送"
-
-    />
-</LinearLayout>s
 </LinearLayout>

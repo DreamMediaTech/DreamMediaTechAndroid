@@ -26,6 +26,7 @@ import com.example.admin.dreammediatechapp.UI.InformationPage.PointActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.SettingsActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.UserInfoActivity;
 import com.example.admin.dreammediatechapp.UI.LoginPage.LoginActivity;
+import com.example.admin.dreammediatechapp.UI.LoginPage.UserLoginActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,18 +85,14 @@ public class InformationFragment extends Fragment {
         mRecyclerView2 = (RecyclerView)view.findViewById(R.id.shopping_recycle);
         user_image = view.findViewById(R.id.user_image);
         user_name = view.findViewById(R.id.user_name);
-        user_name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-            }
-        });
+
         user_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                startActivity(new Intent(getActivity(), UserLoginActivity.class));
             }
         });
+
         initRecyclerView();
 
         // Inflate the layout for this fragment
@@ -185,16 +182,7 @@ public class InformationFragment extends Fragment {
             }
         });
 
-        View.OnClickListener onClickListener= new View.OnClickListener(){
 
-            @Override
-            public void onClick(View view) {
-                int id= view.getId();
-                switch (id){
-
-                }
-            }
-        };
 
 
     }

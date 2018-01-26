@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.admin.dreammediatechapp.Entities.IntegralPackage;
-import com.example.admin.dreammediatechapp.Holder.GiftHolder;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
 

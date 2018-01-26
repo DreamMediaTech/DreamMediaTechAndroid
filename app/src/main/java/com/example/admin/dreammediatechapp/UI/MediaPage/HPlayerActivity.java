@@ -88,8 +88,6 @@ public class HPlayerActivity extends AppCompatActivity {
         rootView = getLayoutInflater().from(getApplicationContext()).inflate(R.layout.activity_h, null);
         setContentView(rootView);
         comment_seoll_view=(ScrollView)findViewById(R.id.comment_scroll_view);
-        comment=(EditText)findViewById(R.id.comment_input);
-        send=(Button)findViewById(R.id.send_button);
 
         //textView=(TextView)findViewById(R.id.comment_item);
         single_text=(TextView)findViewById(R.id.single_text);
@@ -178,12 +176,6 @@ public class HPlayerActivity extends AppCompatActivity {
                 .setPlaySource(url3)
                 .startPlay();
 
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendComment();
-            }
-        });
     }
 
     //监听标题栏
@@ -199,15 +191,6 @@ public class HPlayerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * 播放本地视频
-     */
-
-    private String getLocalVideoPath(String name) {
-        String sdCard = Environment.getExternalStorageDirectory().getPath();
-        String uri = sdCard + File.separator + name;
-        return uri;
-    }
 
     @Override
     protected void onPause() {
