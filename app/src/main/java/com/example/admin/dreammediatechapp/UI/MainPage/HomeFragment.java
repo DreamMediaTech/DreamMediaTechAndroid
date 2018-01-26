@@ -46,13 +46,12 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     private RollPagerView mRollPageViewPager;
-    private RecyclerView mRecyclerView,shortcutRecyclerView;
+
     private NestedScrollView nestedScrollView;
    private List<Video> videoList = new ArrayList<>();
+    private RecyclerView mRecyclerView,shortcutRecyclerView;
 
 
 
@@ -78,8 +77,6 @@ public class HomeFragment extends Fragment {
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -102,13 +99,7 @@ public class HomeFragment extends Fragment {
             video.setvNum(111*i);
             videoList.add(video);
         }
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
 
-
-
-        }
     }
 
     @Override

@@ -56,7 +56,9 @@
         <activity android:name=".UI.InformationPage.PointActivity" />
         <activity android:name=".UI.InformationPage.MyShareActivity" />
         <activity android:name=".UI.InformationPage.SettingsActivity" />
-        <activity android:name=".UI.InformationPage.CustomerServiceActivity"></activity>
+        <activity android:name=".UI.InformationPage.CustomerServiceActivity" />
+        <activity android:name=".UI.InformationPage.UploadActivity" />
+        <activity android:name=".UI.InformationPage.MyVideoActivity"></activity>
     </application>
 
 </manifest>

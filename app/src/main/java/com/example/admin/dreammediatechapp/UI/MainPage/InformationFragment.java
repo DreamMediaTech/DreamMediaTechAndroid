@@ -21,6 +21,7 @@ import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.UI.InformationPage.CustomerServiceActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.MyShareActivity;
+import com.example.admin.dreammediatechapp.UI.InformationPage.MyVideoActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.PointActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.SettingsActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.UserInfoActivity;
@@ -157,6 +158,9 @@ public class InformationFragment extends Fragment {
                         break;
                     case 3:
                         startActivity(new Intent(getContext(), MyShareActivity.class ));
+                        break;
+                    case 5:
+                        startActivity(new Intent(getContext(), MyVideoActivity.class));
                         break;
                     case 6:
                         startActivity(new Intent(getContext(), SettingsActivity.class));
