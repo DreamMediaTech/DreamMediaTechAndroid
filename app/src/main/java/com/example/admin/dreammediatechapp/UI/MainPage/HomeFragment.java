@@ -27,6 +27,7 @@ import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
+import com.example.admin.dreammediatechapp.UI.MediaPage.PlayerActivity;
 import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
@@ -240,7 +241,7 @@ public class HomeFragment extends Fragment {
         video_cover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent play = new Intent(getActivity().getApplicationContext(), HPlayerActivity.class);
+                Intent play = new Intent(getActivity(), PlayerActivity.class);
                 Bundle bundle = new Bundle();
                 startActivity(play);
 

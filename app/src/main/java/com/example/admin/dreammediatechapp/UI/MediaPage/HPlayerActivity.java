@@ -9,6 +9,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +25,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.admin.dreammediatechapp.Adapter.ContentPagerAdapter;
 import com.example.admin.dreammediatechapp.Entities.VideoijkBean;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.Utils.MediaUtils;
@@ -70,32 +74,27 @@ public class HPlayerActivity extends AppCompatActivity {
     private List<VideoijkBean> list;
     private PowerManager.WakeLock wakeLock;
     View rootView;
-    private EditText comment;
-    private Button send,play;
-    private RecyclerView recyclerView;
-    private List<String> appList=new ArrayList<>();
-    private TextView textView,single_text;
-    private final Timer timer = new Timer();
-    private TimerTask task;
-    private String url,url2,url3;
-    private ScrollView comment_seoll_view;
-    private EditText play_address;
+    private String url,url2,url3,url4;
+    private TabLayout tab;
+    private ViewPager viewPager;
+    private List<String> tabIndicators;
+    private List<Fragment> tabFragments;
+    private ContentPagerAdapter contentAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mContext = this;
-        rootView = getLayoutInflater().from(getApplicationContext()).inflate(R.layout.activity_h, null);
+        rootView = getLayoutInflater().from(this).inflate(R.layout.activity_h, null);
         setContentView(rootView);
-        comment_seoll_view=(ScrollView)findViewById(R.id.comment_scroll_view);
+        url="http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
+        url2="http://192.168.1.103:10088/EasyTrans/Data/30a0b2f0ffde11e7813defa4ae4d6b2f/video.m3u8";
+        url3="rtmp://119.29.114.73/oflaDemo/BladeRunner2049.flv";
 
-        //textView=(TextView)findViewById(R.id.comment_item);
-        single_text=(TextView)findViewById(R.id.single_text);
+        viewPager=findViewById(R.id.video_viewPager);
+        tab=(TabLayout)findViewById(R.id.video_detail);
+        tab.setTabMode(TabLayout.MODE_FIXED);
 
-        url2="http://player.alicdn.com/video/aliyunmedia.mp4";
-       // url="http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
-        url3="http://192.168.1.103:10088/EasyTrans/Data/30a0b2f0ffde11e7813defa4ae4d6b2f/video.m3u8";
-        url="http://119.29.114.73/oflaDemo/guardians2.mp4";
         /**虚拟按键的隐藏方法*/
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
@@ -121,22 +120,12 @@ public class HPlayerActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
 
         }
-        for (int i=1;i<3;i++){
-            String comment="测试播放";
-            appList.add(comment);
-        }
-
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                getSingleData();
-            }
-        };
-        timer.schedule(task,5000,5000);
 
 
         /**常亮*/
-
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "liveTAG");
+        wakeLock.acquire();
        // list = new ArrayList<VideoijkBean>();
         //有部分视频加载有问题，这个视频是有声音显示不出图像的，没有解决http://fzkt-biz.oss-cn-hangzhou.aliyuncs.com/vedio/2f58be65f43946c588ce43ea08491515.mp4
         //这里模拟一个本地视频的播放，视频需要将testvideo文件夹的视频放到安卓设备的内置sd卡根目录中
@@ -173,8 +162,11 @@ public class HPlayerActivity extends AppCompatActivity {
                 .forbidTouch(false)
                 .hideSteam(true)
                 .hideCenterPlayer(true)
-                .setPlaySource(url3)
+                .setPlaySource(url)
                 .startPlay();
+
+
+
 
     }
 
@@ -184,13 +176,20 @@ public class HPlayerActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish(); // back button
-
-                CleanComment();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 播放本地视频
+     */
+
+    private String getLocalVideoPath(String name) {
+        String sdCard = Environment.getExternalStorageDirectory().getPath();
+        String uri = sdCard + File.separator + name;
+        return uri;
+    }
 
     @Override
     protected void onPause() {
@@ -211,6 +210,9 @@ public class HPlayerActivity extends AppCompatActivity {
         /**demo的内容，暂停系统其它媒体的状态*/
         MediaUtils.muteAudioFocus(mContext, false);
         /**demo的内容，激活设备常亮状态*/
+        if (wakeLock != null) {
+            wakeLock.acquire();
+        }
     }
 
     @Override
@@ -235,7 +237,6 @@ public class HPlayerActivity extends AppCompatActivity {
 
             return;
         }
-        timer.cancel();
         super.onBackPressed();
         /**demo的内容，恢复设备亮度状态*/
         if (wakeLock != null) {
@@ -243,211 +244,211 @@ public class HPlayerActivity extends AppCompatActivity {
         }
     }
 
-    private  void playMenthod(){
-
-    }
-    private void CleanComment(){
-        final Runnable runnable=new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    String sendComment = comment.getText().toString();
-                    String sendUrl = "http://119.29.114.73/MessageDemo/MessageServlet?method=clean";
-                    OkHttpClient okHttpClient = new OkHttpClient();
-                    final Request request = new Request.Builder().url(sendUrl).build();
-                    Call call = okHttpClient.newCall(request);
-                    AfterSend();
-                    call.enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Request request, IOException e) {
-
-                        }
-
-                        @Override
-                        public void onResponse(Response response) throws IOException {
-
-                        }
-                    });
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        };
-        new Thread(){
-            public void run(){
-                new Handler(Looper.getMainLooper()).post(runnable);
-            }
-        }.start();
-    }
-    private void sendComment(){
-        final Runnable runnable=new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    String sendComment = comment.getText().toString();
-                    String sendUrl = "http://119.29.114.73/MessageDemo/MessageServlet?method=send&message="+sendComment;
-                    Toast.makeText(getApplicationContext(),"发送成功", Toast.LENGTH_LONG).show();
-                    OkHttpClient okHttpClient = new OkHttpClient();
-                    final Request request = new Request.Builder().url(sendUrl).build();
-                    Call call = okHttpClient.newCall(request);
-                    AfterSend();
-                    call.enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Request request, IOException e) {
-
-                        }
-
-                        @Override
-                        public void onResponse(Response response) throws IOException {
-
-                        }
-                    });
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        };
-        new Thread(){
-            public void run(){
-                new Handler(Looper.getMainLooper()).post(runnable);
-            }
-        }.start();
-    }
-    private void AfterSend(){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager imm =(InputMethodManager)getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(comment.getWindowToken(), 0);
-                comment.setText("");
-            }
-        });
-    }
-
-    private void getData() {
-        final Runnable runnable2=new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    Thread.sleep(1000);
-                    String getUrl="http://119.29.114.73/MessageDemo/MessageServlet?method=getMessage";
-                    //在子线程中执行Http请求，并将最终的请求结果回调到okhttp3.Callback中
-
-                    OkHttpClient okHttpClient = new OkHttpClient();
-                    final Request request = new Request.Builder().url(getUrl).get().build();
-                    //得到服务器返回的具体内容
-                    Call call =okHttpClient.newCall(request);
-                    call.enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Request request, IOException e) {
-
-                        }
-
-
-
-                        @Override
-                        public void onResponse(Response response) throws IOException {
-
-                            String responseData = response.body().string();
-                            parseJSONWithGSON(responseData);
-                            Log.d("VodActivity","jsonData"+responseData);
-                            // showResponse(responseData.toString());
-
-                        }
-                    });
-
-
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        };
-        new Thread(){
-            public void run(){
-                new Handler(Looper.getMainLooper()).post(runnable2);
-            }
-        }.start();
-
-    }
-    private void parseJSONWithGSON(String jsonData) throws IOException {
-        //使用轻量级的Gson解析得到的json
-        Gson gson = new Gson();
-        appList = gson.fromJson(jsonData, new TypeToken<List<String >>(){}.getType());
-
-        // appList = gson.fromJson(jsonData, new TypeToken<List<CommentEntites>>() {}.getType());
-
-    }
-    private void showResponse(final String response) {
-        //在子线程中更新UI
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // 在这里进行UI操作，将结果显示到界面上
-
-                for (int i =1 ; i<appList.size();i++) {
-                    //控制台输出结果，便于查看
-                    //Log.d("MainActivity", "other" + app.getContent());
-                    Log.d("VodActivity","jsonData"+response);
-                    //appList.add(0,response);
-                    //recyclerView.setAdapter(mRecyclerViewAdapter=new RecyclerViewAdapter(getApplicationContext(),appList));
-                    //mRecyclerViewAdapter.notifyItemInserted(0);
-                    String allStr = "";
-                    for (String str:appList){
-                        allStr = allStr + str;
-                    }
-                    single_text.setText(allStr);
-                    comment_seoll_view.fullScroll(ScrollView.FOCUS_DOWN);
-
-                }
-
-            }
-        });
-    }
-    private void getSingleData() {
-        final Runnable runnable2=new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    Thread.sleep(1000);
-                    String getUrl="http://119.29.114.73/MessageDemo/MessageServlet?method=getMessage";
-                    //在子线程中执行Http请求，并将最终的请求结果回调到okhttp3.Callback中
-
-                    OkHttpClient okHttpClient = new OkHttpClient();
-                    final Request request = new Request.Builder().url(getUrl).get().build();
-                    //得到服务器返回的具体内容
-                    Call call =okHttpClient.newCall(request);
-                    call.enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Request request, IOException e) {
-
-                        }
-                        @Override
-                        public void onResponse(Response response) throws IOException {
-
-                            String responseData = response.body().string();
-                            parseJSONWithGSON(responseData);
-                            Log.d("VodActivity","jsonData"+responseData);
-                            showResponse(responseData.toString());
-
-
-                        }
-                    });
-
-
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        };
-        new Thread(){
-            public void run(){
-                new Handler(Looper.getMainLooper()).post(runnable2);
-            }
-        }.start();
-
-    }
+//    private  void playMenthod(){
+//
+//    }
+//    private void CleanComment(){
+//        final Runnable runnable=new Runnable() {
+//            @Override
+//            public void run() {
+//                try{
+//                    String sendComment = comment.getText().toString();
+//                    String sendUrl = "http://119.29.114.73/MessageDemo/MessageServlet?method=clean";
+//                    OkHttpClient okHttpClient = new OkHttpClient();
+//                    final Request request = new Request.Builder().url(sendUrl).build();
+//                    Call call = okHttpClient.newCall(request);
+//                    AfterSend();
+//                    call.enqueue(new Callback() {
+//                        @Override
+//                        public void onFailure(Request request, IOException e) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onResponse(Response response) throws IOException {
+//
+//                        }
+//                    });
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        new Thread(){
+//            public void run(){
+//                new Handler(Looper.getMainLooper()).post(runnable);
+//            }
+//        }.start();
+//    }
+//    private void sendComment(){
+//        final Runnable runnable=new Runnable() {
+//            @Override
+//            public void run() {
+//                try{
+//                    String sendComment = comment.getText().toString();
+//                    String sendUrl = "http://119.29.114.73/MessageDemo/MessageServlet?method=send&message="+sendComment;
+//                    Toast.makeText(getApplicationContext(),"发送成功", Toast.LENGTH_LONG).show();
+//                    OkHttpClient okHttpClient = new OkHttpClient();
+//                    final Request request = new Request.Builder().url(sendUrl).build();
+//                    Call call = okHttpClient.newCall(request);
+//                    AfterSend();
+//                    call.enqueue(new Callback() {
+//                        @Override
+//                        public void onFailure(Request request, IOException e) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onResponse(Response response) throws IOException {
+//
+//                        }
+//                    });
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        new Thread(){
+//            public void run(){
+//                new Handler(Looper.getMainLooper()).post(runnable);
+//            }
+//        }.start();
+//    }
+//    private void AfterSend(){
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                InputMethodManager imm =(InputMethodManager)getSystemService(
+//                        Context.INPUT_METHOD_SERVICE);
+//                imm.hideSoftInputFromWindow(comment.getWindowToken(), 0);
+//                comment.setText("");
+//            }
+//        });
+//    }
+//
+//    private void getData() {
+//        final Runnable runnable2=new Runnable() {
+//            @Override
+//            public void run() {
+//                try{
+//                    Thread.sleep(1000);
+//                    String getUrl="http://119.29.114.73/MessageDemo/MessageServlet?method=getMessage";
+//                    //在子线程中执行Http请求，并将最终的请求结果回调到okhttp3.Callback中
+//
+//                    OkHttpClient okHttpClient = new OkHttpClient();
+//                    final Request request = new Request.Builder().url(getUrl).get().build();
+//                    //得到服务器返回的具体内容
+//                    Call call =okHttpClient.newCall(request);
+//                    call.enqueue(new Callback() {
+//                        @Override
+//                        public void onFailure(Request request, IOException e) {
+//
+//                        }
+//
+//
+//
+//                        @Override
+//                        public void onResponse(Response response) throws IOException {
+//
+//                            String responseData = response.body().string();
+//                            parseJSONWithGSON(responseData);
+//                            Log.d("VodActivity","jsonData"+responseData);
+//                            // showResponse(responseData.toString());
+//
+//                        }
+//                    });
+//
+//
+//
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        new Thread(){
+//            public void run(){
+//                new Handler(Looper.getMainLooper()).post(runnable2);
+//            }
+//        }.start();
+//
+//    }
+//    private void parseJSONWithGSON(String jsonData) throws IOException {
+//        //使用轻量级的Gson解析得到的json
+//        Gson gson = new Gson();
+//        appList = gson.fromJson(jsonData, new TypeToken<List<String >>(){}.getType());
+//
+//        // appList = gson.fromJson(jsonData, new TypeToken<List<CommentEntites>>() {}.getType());
+//
+//    }
+//    private void showResponse(final String response) {
+//        //在子线程中更新UI
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                // 在这里进行UI操作，将结果显示到界面上
+//
+//                for (int i =1 ; i<appList.size();i++) {
+//                    //控制台输出结果，便于查看
+//                    //Log.d("MainActivity", "other" + app.getContent());
+//                    Log.d("VodActivity","jsonData"+response);
+//                    //appList.add(0,response);
+//                    //recyclerView.setAdapter(mRecyclerViewAdapter=new RecyclerViewAdapter(getApplicationContext(),appList));
+//                    //mRecyclerViewAdapter.notifyItemInserted(0);
+//                    String allStr = "";
+//                    for (String str:appList){
+//                        allStr = allStr + str;
+//                    }
+//                    single_text.setText(allStr);
+//                    comment_seoll_view.fullScroll(ScrollView.FOCUS_DOWN);
+//
+//                }
+//
+//            }
+//        });
+//    }
+//    private void getSingleData() {
+//        final Runnable runnable2=new Runnable() {
+//            @Override
+//            public void run() {
+//                try{
+//                    Thread.sleep(1000);
+//                    String getUrl="http://119.29.114.73/MessageDemo/MessageServlet?method=getMessage";
+//                    //在子线程中执行Http请求，并将最终的请求结果回调到okhttp3.Callback中
+//
+//                    OkHttpClient okHttpClient = new OkHttpClient();
+//                    final Request request = new Request.Builder().url(getUrl).get().build();
+//                    //得到服务器返回的具体内容
+//                    Call call =okHttpClient.newCall(request);
+//                    call.enqueue(new Callback() {
+//                        @Override
+//                        public void onFailure(Request request, IOException e) {
+//
+//                        }
+//                        @Override
+//                        public void onResponse(Response response) throws IOException {
+//
+//                            String responseData = response.body().string();
+//                            parseJSONWithGSON(responseData);
+//                            Log.d("VodActivity","jsonData"+responseData);
+//                            showResponse(responseData.toString());
+//
+//
+//                        }
+//                    });
+//
+//
+//
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        new Thread(){
+//            public void run(){
+//                new Handler(Looper.getMainLooper()).post(runnable2);
+//            }
+//        }.start();
+//
+//    }
 
 }
