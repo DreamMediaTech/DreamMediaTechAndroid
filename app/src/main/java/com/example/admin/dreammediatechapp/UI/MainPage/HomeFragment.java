@@ -241,7 +241,7 @@ public class HomeFragment extends Fragment {
         video_cover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent play = new Intent(getActivity(), PlayerActivity.class);
+                Intent play = new Intent(getActivity(), HPlayerActivity.class);
                 Bundle bundle = new Bundle();
                 startActivity(play);
 

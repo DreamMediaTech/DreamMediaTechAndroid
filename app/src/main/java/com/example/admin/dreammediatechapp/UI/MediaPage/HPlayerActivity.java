@@ -89,7 +89,8 @@ public class HPlayerActivity extends AppCompatActivity {
         setContentView(rootView);
         url="http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
         url2="http://192.168.1.103:10088/EasyTrans/Data/30a0b2f0ffde11e7813defa4ae4d6b2f/video.m3u8";
-        url3="rtmp://119.29.114.73/oflaDemo/BladeRunner2049.flv";
+        url3="http://player.alicdn.com/video/aliyunmedia.mp4";
+
 
         viewPager=findViewById(R.id.video_viewPager);
         tab=(TabLayout)findViewById(R.id.video_detail);
@@ -162,7 +163,7 @@ public class HPlayerActivity extends AppCompatActivity {
                 .forbidTouch(false)
                 .hideSteam(true)
                 .hideCenterPlayer(true)
-                .setPlaySource(url)
+                .setPlaySource(url3)
                 .startPlay();
 
 

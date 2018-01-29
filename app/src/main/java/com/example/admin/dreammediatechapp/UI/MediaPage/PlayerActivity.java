@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.aliyun.vodplayer.media.AliyunLocalSource;
+import com.aliyun.vodplayer.media.AliyunVidSource;
 import com.aliyun.vodplayer.media.IAliyunVodPlayer;
 import com.aliyun.vodplayerview.utils.ScreenUtils;
 import com.aliyun.vodplayerview.widget.AliyunVodPlayerView;
@@ -22,6 +23,8 @@ import com.example.admin.dreammediatechapp.Utils.ScreenStatusController;
 
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerActivity extends AppCompatActivity {
