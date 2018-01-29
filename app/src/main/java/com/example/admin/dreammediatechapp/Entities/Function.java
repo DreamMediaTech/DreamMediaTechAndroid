@@ -4,7 +4,7 @@ public class Function {
 	private int fId;
 	private String Fname;
 	private String Fdescribe;
-	private String Fstate;
+	private int Fstate;
 	
 	public int getfId() {
 		return fId;
@@ -24,10 +24,10 @@ public class Function {
 	public void setFdescribe(String fdescribe) {
 		Fdescribe = fdescribe;
 	}
-	public String getFstate() {
+	public int getFstate() {
 		return Fstate;
 	}
-	public void setFstate(String fstate) {
+	public void setFstate(int fstate) {
 		Fstate = fstate;
 	}
 	

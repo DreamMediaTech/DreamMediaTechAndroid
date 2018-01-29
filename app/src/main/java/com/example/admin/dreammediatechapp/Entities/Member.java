@@ -13,18 +13,15 @@ public class Member {
 	private float bonusIntegral;
 	private float consumptionIntegral;
 	private float sharingIntegral;
-	
+	private int iId;
 	private User user;
+	
 	public User getUser() {
 		return user;
 	}
 	public void setUser(User user) {
 		this.user = user;
 	}
-	private int superQuota;
-	private int iId;
-	
-		
 	public int getiId() {
 		return iId;
 	}
@@ -103,12 +100,5 @@ public class Member {
 	}
 	public void setSharingIntegral(float sharingIntegral) {
 		this.sharingIntegral = sharingIntegral;
-	}
-	
-	public int getSuperQuota() {
-		return superQuota;
-	}
-	public void setSuperQuota(int superQuota) {
-		this.superQuota = superQuota;
 	}
 }

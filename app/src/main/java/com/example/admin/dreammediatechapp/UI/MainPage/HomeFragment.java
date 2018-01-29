@@ -2,6 +2,7 @@ package com.example.admin.dreammediatechapp.UI.MainPage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -275,4 +276,5 @@ public class HomeFragment extends Fragment {
             return videoList.size();
         }
     }
+
 }

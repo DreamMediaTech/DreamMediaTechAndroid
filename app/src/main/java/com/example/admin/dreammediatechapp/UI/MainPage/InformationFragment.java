@@ -2,6 +2,7 @@ package com.example.admin.dreammediatechapp.UI.MainPage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -42,15 +43,12 @@ public class InformationFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     private RecyclerView mRecyclerView,mRecyclerView2;
     private ImageView user_image;
     private TextView user_name;
+    SharedPreferences sp;
 
     public static InformationFragment newInstance() {
         return new InformationFragment();
@@ -71,10 +69,24 @@ public class InformationFragment extends Fragment {
         Bundle args = new Bundle();
         return fragment;
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        CheckLoginState();
 
+    }
+
+    @Override
+    public  void onStart() {
+
+        super.onStart();
+
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     @Override
@@ -85,15 +97,26 @@ public class InformationFragment extends Fragment {
         mRecyclerView2 = (RecyclerView)view.findViewById(R.id.shopping_recycle);
         user_image = view.findViewById(R.id.user_image);
         user_name = view.findViewById(R.id.user_name);
+        sp=getActivity().getSharedPreferences("LoginState",Context.MODE_PRIVATE);
+
 
         user_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), UserLoginActivity.class));
+                String username = sp.getString("name",null);
+                if (username==null){
+                    startActivity(new Intent(getActivity(), UserLoginActivity.class));
+                }
+                else {
+                    Toast.makeText(getContext(),"欢迎您，"+username,Toast.LENGTH_LONG).show();
+                }
+
+
             }
         });
 
         initRecyclerView();
+
 
         // Inflate the layout for this fragment
         return view;
@@ -182,9 +205,15 @@ public class InformationFragment extends Fragment {
             }
         });
 
+    }
 
 
-
+    public void CheckLoginState(){
+        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("LoginState",Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString("name",null);
+        if (username!=null){
+            user_name.setText(username);
+        }
     }
 }
 

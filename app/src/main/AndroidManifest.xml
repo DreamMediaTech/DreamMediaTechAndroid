@@ -74,6 +74,9 @@
         <activity android:name=".UI.MediaPage.PlayerActivity">
 
         </activity>
+        <!-- 极光SMS-->
+        <meta-data android:name="JPUSH_APPKEY" android:value="6686812c0bd0b603d0cab38f"/>
+
     </application>
 
 </manifest>

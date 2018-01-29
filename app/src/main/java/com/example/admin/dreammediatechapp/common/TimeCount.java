@@ -7,7 +7,7 @@ import android.widget.Button;
 import com.example.admin.dreammediatechapp.R;
 
 /**
- * Created by Admin on 2018/1/29.
+ * 倒计时
  */
 
 public class TimeCount extends CountDownTimer {
@@ -27,7 +27,7 @@ public class TimeCount extends CountDownTimer {
 
     @Override
     public void onFinish() {
-        button.setText("重新获取验证码");
+        button.setText("获取验证码");
         button.setClickable(true);
         button.setBackgroundColor(Color.parseColor("#FF009688"));
 
