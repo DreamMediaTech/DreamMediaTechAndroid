@@ -101,7 +101,7 @@ public class PlayerView {
     /**
      * 视频方向旋转按钮
      */
-    private final ImageView iv_rotation;
+//    private final ImageView iv_rotation;
     /**
      * 视频返回按钮
      */
@@ -401,9 +401,6 @@ public class PlayerView {
             } else if (v.getId() == R.id.app_video_stream) {
                 /**选择分辨率*/
                 showStreamSelectView();
-            } else if (v.getId() == R.id.ijk_iv_rotation) {
-                /**旋转视频方向*/
-                setPlayerRotation();
             } else if (v.getId() == R.id.app_video_fullscreen) {
                 /**视频全屏切换*/
                 toggleFullScreen();
@@ -643,7 +640,7 @@ public class PlayerView {
             iv_menu = (ImageView) mActivity.findViewById(R.id.app_video_menu);
             iv_bar_player = (ImageView) mActivity.findViewById(R.id.app_video_play);
             iv_player = (ImageView) mActivity.findViewById(R.id.play_icon);
-            iv_rotation = (ImageView) mActivity.findViewById(R.id.ijk_iv_rotation);
+//            iv_rotation = (ImageView) mActivity.findViewById(R.id.ijk_iv_rotation);
             iv_fullscreen = (ImageView) mActivity.findViewById(R.id.app_video_fullscreen);
             tv_steam = (TextView) mActivity.findViewById(R.id.app_video_stream);
             tv_speed = (TextView) mActivity.findViewById(R.id.app_video_speed);
@@ -658,7 +655,7 @@ public class PlayerView {
             iv_menu = (ImageView) rootView.findViewById(R.id.app_video_menu);
             iv_bar_player = (ImageView) rootView.findViewById(R.id.app_video_play);
             iv_player = (ImageView) rootView.findViewById(R.id.play_icon);
-            iv_rotation = (ImageView) rootView.findViewById(R.id.ijk_iv_rotation);
+//            iv_rotation = (ImageView) rootView.findViewById(R.id.ijk_iv_rotation);
             iv_fullscreen = (ImageView) rootView.findViewById(R.id.app_video_fullscreen);
             tv_steam = (TextView) rootView.findViewById(R.id.app_video_stream);
             tv_speed = (TextView) rootView.findViewById(R.id.app_video_speed);
@@ -670,7 +667,7 @@ public class PlayerView {
         iv_bar_player.setOnClickListener(onClickListener);
         iv_player.setOnClickListener(onClickListener);
         iv_fullscreen.setOnClickListener(onClickListener);
-        iv_rotation.setOnClickListener(onClickListener);
+//        iv_rotation.setOnClickListener(onClickListener);
         tv_steam.setOnClickListener(onClickListener);
         iv_back.setOnClickListener(onClickListener);
         iv_menu.setOnClickListener(onClickListener);
@@ -1218,12 +1215,12 @@ public class PlayerView {
         return ll_bottombar;
     }
 
-    /**
-     * 获取旋转view
-     */
-    public ImageView getRationView() {
-        return iv_rotation;
-    }
+//    /**
+//     * 获取旋转view
+//     */
+//    public ImageView getRationView() {
+//        return iv_rotation;
+//    }
 
     /**
      * 获取返回view
@@ -1284,13 +1281,13 @@ public class PlayerView {
         return this;
     }
 
-    /**
-     * 隐藏旋转按钮，true隐藏，false为显示
-     */
-    public PlayerView hideRotation(boolean isHide) {
-        iv_rotation.setVisibility(isHide ? View.GONE : View.VISIBLE);
-        return this;
-    }
+//    /**
+//     * 隐藏旋转按钮，true隐藏，false为显示
+//     */
+//    public PlayerView hideRotation(boolean isHide) {
+//        iv_rotation.setVisibility(isHide ? View.GONE : View.VISIBLE);
+//        return this;
+//    }
 
     /**
      * 隐藏全屏按钮，true隐藏，false为显示

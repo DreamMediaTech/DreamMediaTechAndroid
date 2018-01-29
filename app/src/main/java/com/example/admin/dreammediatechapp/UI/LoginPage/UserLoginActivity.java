@@ -3,6 +3,7 @@ package com.example.admin.dreammediatechapp.UI.LoginPage;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -56,6 +57,8 @@ public class UserLoginActivity extends AppCompatActivity{
             actionBar.setTitle("登录");
         }
 
+        init();
+
     }
     private void init(){
         loginName=findViewById(R.id.login_name);
@@ -69,6 +72,8 @@ public class UserLoginActivity extends AppCompatActivity{
         forgetPassword.setOnClickListener(onClickListener);
 
 
+
+
     }
     private View.OnClickListener onClickListener=new View.OnClickListener() {
         @Override
@@ -77,6 +82,7 @@ public class UserLoginActivity extends AppCompatActivity{
                 case R.id.sign_in_button:
                     break;
                 case  R.id.register_button:
+                    startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
                     break;
                 case R.id.forget_password:
                     break;

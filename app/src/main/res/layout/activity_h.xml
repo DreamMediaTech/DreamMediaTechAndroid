@@ -6,7 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".UI.MediaPage.HPlayerActivity">
-
+    <include
+        layout="@layout/simple_player_view_player"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,10 +22,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical">
-            <include
-                layout="@layout/simple_player_view_player"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"/>
+
           <LinearLayout
               android:layout_width="match_parent"
               android:layout_height="match_parent"

@@ -80,6 +80,7 @@ public class HPlayerActivity extends AppCompatActivity {
     private List<String> tabIndicators;
     private List<Fragment> tabFragments;
     private ContentPagerAdapter contentAdapter;
+    private String listUrl,listUrl2,listUrl3,listUrl4;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,6 +120,7 @@ public class HPlayerActivity extends AppCompatActivity {
         if (actionBar!=null){
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.hide();
 
         }
 
@@ -127,23 +129,30 @@ public class HPlayerActivity extends AppCompatActivity {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "liveTAG");
         wakeLock.acquire();
-       // list = new ArrayList<VideoijkBean>();
-        //有部分视频加载有问题，这个视频是有声音显示不出图像的，没有解决http://fzkt-biz.oss-cn-hangzhou.aliyuncs.com/vedio/2f58be65f43946c588ce43ea08491515.mp4
-        //这里模拟一个本地视频的播放，视频需要将testvideo文件夹的视频放到安卓设备的内置sd卡根目录中
-//        String url1 = getLocalVideoPath("my_video.mp4");
-//        if (!new File(url1).exists()) {
-//            url1 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
-//        }
-//        String url2 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f30.mp4";
-//        VideoijkBean m1 = new VideoijkBean();
-//        m1.setStream("标清");
-//        m1.setUrl(url1);
-//        VideoijkBean m2 = new VideoijkBean();
-//        m2.setStream("高清");
-//        m2.setUrl(url2);
-//        list.add(m1);
-//        list.add(m2);
+        list = new ArrayList<VideoijkBean>();
+//        有部分视频加载有问题，这个视频是有声音显示不出图像的，没有解决http://fzkt-biz.oss-cn-hangzhou.aliyuncs.com/vedio/2f58be65f43946c588ce43ea08491515.mp4
+//        这里模拟一个本地视频的播放，视频需要将testvideo文件夹的视频放到安卓设备的内置sd卡根目录中
+        VideoijkBean m1 = new VideoijkBean();
+        m1.setStream("标清");
+        m1.setUrl("http://192.168.1.103:8090/video/kbd_sd.mp4");
 
+        VideoijkBean m2 = new VideoijkBean();
+        m2.setStream("高清");
+        m2.setUrl("http://192.168.1.103:8090/video/kbd_hd.mp4");
+
+        VideoijkBean m3 = new VideoijkBean();
+        m3.setStream("超清");
+        m3.setUrl("http://192.168.1.103:8090/video/kbd_ud.mp4");
+
+
+        VideoijkBean m4 = new VideoijkBean();
+        m4.setStream("原画");
+        m4.setUrl("http://192.168.1.103:8090/video/kbd.mp4");
+
+        list.add(m1);
+        list.add(m2);
+        list.add(m3);
+        list.add(m4);
 
         player = new PlayerView(this, rootView) {
             @Override
@@ -161,13 +170,10 @@ public class HPlayerActivity extends AppCompatActivity {
                 .setProcessDurationOrientation(PlayStateParams.PROCESS_PORTRAIT)
                 .setScaleType(PlayStateParams.fillparent)
                 .forbidTouch(false)
-                .hideSteam(true)
+                .hideSteam(false)
                 .hideCenterPlayer(true)
-                .setPlaySource(url3)
+                .setPlaySource(list)
                 .startPlay();
-
-
-
 
     }
 

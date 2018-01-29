@@ -25,10 +25,11 @@
 
 
         <EditText
-            android:id="@+id/phone_number"
+            android:id="@+id/register_phone_number"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:hint="@string/phone_number"
+            android:inputType="number"
             android:layout_weight="0.8"
             android:imeActionLabel="test"
             android:imeOptions="actionUnspecified"
@@ -38,7 +39,7 @@
             tools:layout_editor_absoluteY="54dp" />
 
         <Button
-            android:id="@+id/get_code"
+            android:id="@+id/register_get_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
