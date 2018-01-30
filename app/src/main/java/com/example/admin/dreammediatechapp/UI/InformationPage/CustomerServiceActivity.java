@@ -13,11 +13,15 @@ import android.view.MenuItem;
 import android.widget.TableLayout;
 
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.MediaPage.VideoCommentFragment;
+import com.example.admin.dreammediatechapp.UI.MediaPage.VideoDetailragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerServiceActivity extends AppCompatActivity implements HitQuestionFragment.OnFragmentInteractionListener,IMServiceFragment.OnFragmentInteractionListener{
+public class CustomerServiceActivity extends AppCompatActivity implements
+        HitQuestionFragment.OnFragmentInteractionListener,
+        IMServiceFragment.OnFragmentInteractionListener{
     private TabLayout mTab;
     private ViewPager viewPager;
     private List<String> tabIndicators;

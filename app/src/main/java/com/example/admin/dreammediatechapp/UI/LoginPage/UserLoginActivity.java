@@ -37,12 +37,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.R;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -63,7 +67,7 @@ public class UserLoginActivity extends AppCompatActivity{
     private EditText loginName,loginPassword;
     private Button loginButton,registerButton;
     private TextView forgetPassword;
-    private String loginUrl="http://192.168.1.103:8080/Dream/MobileUserController/AppLogin.action";
+    private String loginUrl="http://192.168.1.101:8080/Dream/MobileUserController/AppLogin.action";
     private String TAG="UserLoginActivity";
 
     @Override
@@ -99,7 +103,6 @@ public class UserLoginActivity extends AppCompatActivity{
             switch (view.getId()){
                 case R.id.sign_in_button:
                     LoginAction(loginUrl,loginName.getText().toString(),loginPassword.getText().toString());
-                    Toast.makeText(getApplicationContext(),"登录",Toast.LENGTH_LONG).show();
                     break;
                 case  R.id.register_button:
                     startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
@@ -124,13 +127,12 @@ public class UserLoginActivity extends AppCompatActivity{
     }
 
 
-    public void CreateLoginState(String username,String password){
+    public void CreateLoginState(String username){
         if(sp == null){
             sp = getSharedPreferences(FILE,MODE_PRIVATE);
         }
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("name",loginName.getText().toString());
-        editor.putString("pass",loginPassword.getText().toString());
         editor.commit();
         Toast.makeText(getApplicationContext(),"执行方法",Toast.LENGTH_LONG).show();
     }
@@ -157,6 +159,8 @@ public class UserLoginActivity extends AppCompatActivity{
                                 String result = response.body().string();
                                 JsonElement je = new JsonParser().parse(result);
                                 Log.d(TAG,"获取返回码"+je.getAsJsonObject().get("status"));
+                                Log.d(TAG,"获取返回信息"+je.getAsJsonObject().get("data"));
+                                UserJsonData(je.getAsJsonObject().get("data"));
                                 showResponse(je.getAsJsonObject().get("status").toString());
                             }
 
@@ -179,11 +183,31 @@ public class UserLoginActivity extends AppCompatActivity{
             @Override
             public void run() {
                 switch (response){
+                    case "200":
+                        Toast.makeText(getApplicationContext(),"登录成功",Toast.LENGTH_LONG).show();
+                        CreateLoginState(loginName.getText().toString());
+                        finish();
+                        break;
+                    case "500":
+                        Toast.makeText(getApplicationContext(),"用户密码错误",Toast.LENGTH_LONG).show();
+                        break;
+                    case "3":
+                        Toast.makeText(getApplicationContext(),"用户不存在",Toast.LENGTH_LONG).show();
+                        break;
+                    case "4":
+                        Toast.makeText(getApplicationContext(),"用户已被冻结",Toast.LENGTH_LONG).show();
+                        break;
 
                 }
 
             }
         });
+    }
+    private User UserJsonData(JsonElement data){
+        Gson gson = new Gson();
+        User user = gson.fromJson(data,User.class);
+        Log.d(TAG,"获取返回信息"+user.getuNickName());
+        return user;
     }
 
 }

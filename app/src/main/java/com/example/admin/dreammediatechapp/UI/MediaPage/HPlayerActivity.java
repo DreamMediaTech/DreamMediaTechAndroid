@@ -3,24 +3,33 @@ package com.example.admin.dreammediatechapp.UI.MediaPage;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +37,7 @@ import android.widget.Toast;
 import com.example.admin.dreammediatechapp.Adapter.ContentPagerAdapter;
 import com.example.admin.dreammediatechapp.Entities.VideoijkBean;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.InformationPage.IMServiceFragment;
 import com.example.admin.dreammediatechapp.Utils.MediaUtils;
 import com.example.admin.dreammediatechapp.media.PlayStateParams;
 import com.example.admin.dreammediatechapp.media.PlayerView;
@@ -46,28 +56,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
-/**
- * ========================================
- * <p/>
- * 版 权：深圳市晶网科技控股有限公司 版权所有 （C） 2015
- * <p/>
- * 作 者：陈冠明
- * <p/>
- * 个人网站：http://www.dou361.com
- * <p/>
- * 版 本：1.0
- * <p/>
- * 创建日期：2015/11/18 9:40
- * <p/>
- * 描 述：半屏界面
- * <p/>
- * <p/>
- * 修订历史：
- * <p/>
- * ========================================
- */
-public class HPlayerActivity extends AppCompatActivity {
+public class HPlayerActivity extends AppCompatActivity implements VideoCommentFragment.OnFragmentInteractionListener,VideoDetailragment.OnFragmentInteractionListener{
 
     private PlayerView player;
     private Context mContext;
@@ -79,8 +68,9 @@ public class HPlayerActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private List<String> tabIndicators;
     private List<Fragment> tabFragments;
-    private ContentPagerAdapter contentAdapter;
+    private ContentPagerAdapter contentPagerAdapter;
     private String listUrl,listUrl2,listUrl3,listUrl4;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,14 +78,39 @@ public class HPlayerActivity extends AppCompatActivity {
         this.mContext = this;
         rootView = getLayoutInflater().from(this).inflate(R.layout.activity_h, null);
         setContentView(rootView);
+
+        /*
+        测试URL
+         */
         url="http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
         url2="http://192.168.1.103:10088/EasyTrans/Data/30a0b2f0ffde11e7813defa4ae4d6b2f/video.m3u8";
         url3="http://player.alicdn.com/video/aliyunmedia.mp4";
 
 
+
         viewPager=findViewById(R.id.video_viewPager);
         tab=(TabLayout)findViewById(R.id.video_detail);
-        tab.setTabMode(TabLayout.MODE_FIXED);
+        tab.setTabMode(TabLayout.MODE_SCROLLABLE);
+        tab.setTabTextColors(ContextCompat.getColor(this, R.color.colorPrimary), ContextCompat.getColor(this, R.color.colorPrimary));
+        tab.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        tab.setupWithViewPager(viewPager);
+        tabIndicators = new ArrayList<String>();
+        tabFragments = new ArrayList<>();
+        String commentTitle="评论";
+        tabIndicators.add("视频简介");
+        tabIndicators.add(commentTitle);
+        tabFragments.add(new VideoDetailragment());
+        tabFragments.add(new VideoCommentFragment());
+        contentPagerAdapter = new ContentPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(contentPagerAdapter);
+
+        for (int i=0;i<tabIndicators.size();i++){
+            TabLayout.Tab itemTab = tab.getTabAt(i);
+            if(itemTab!=null){
+                itemTab.setText(tabIndicators.get(i).toString());
+            }
+            tab.getTabAt(0).getText();
+        }
 
         /**虚拟按键的隐藏方法*/
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -122,6 +137,7 @@ public class HPlayerActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.hide();
 
+
         }
 
 
@@ -129,25 +145,26 @@ public class HPlayerActivity extends AppCompatActivity {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "liveTAG");
         wakeLock.acquire();
+
         list = new ArrayList<VideoijkBean>();
 //        有部分视频加载有问题，这个视频是有声音显示不出图像的，没有解决http://fzkt-biz.oss-cn-hangzhou.aliyuncs.com/vedio/2f58be65f43946c588ce43ea08491515.mp4
 //        这里模拟一个本地视频的播放，视频需要将testvideo文件夹的视频放到安卓设备的内置sd卡根目录中
         VideoijkBean m1 = new VideoijkBean();
         m1.setStream("标清");
-        m1.setUrl("http://192.168.1.103:8090/video/kbd_sd.mp4");
+        m1.setUrl("http://192.168.1.101:8090/video/kbd_sd.mp4");
 
         VideoijkBean m2 = new VideoijkBean();
         m2.setStream("高清");
-        m2.setUrl("http://192.168.1.103:8090/video/kbd_hd.mp4");
+        m2.setUrl("http://192.168.1.101:8090/video/kbd_hd.mp4");
 
         VideoijkBean m3 = new VideoijkBean();
         m3.setStream("超清");
-        m3.setUrl("http://192.168.1.103:8090/video/kbd_ud.mp4");
+        m3.setUrl("http://192.168.1.101:8090/video/kbd_ud.mp4");
 
 
         VideoijkBean m4 = new VideoijkBean();
         m4.setStream("原画");
-        m4.setUrl("http://192.168.1.103:8090/video/kbd.mp4");
+        m4.setUrl("http://192.168.1.101:8090/video/kbd.mp4");
 
         list.add(m1);
         list.add(m2);
@@ -169,11 +186,21 @@ public class HPlayerActivity extends AppCompatActivity {
                 .setTitle("测试播放")
                 .setProcessDurationOrientation(PlayStateParams.PROCESS_PORTRAIT)
                 .setScaleType(PlayStateParams.fillparent)
-                .forbidTouch(false)
+                .forbidTouch(true)
                 .hideSteam(false)
                 .hideCenterPlayer(true)
-                .setPlaySource(list)
-                .startPlay();
+                .setPlaySource(list);
+
+        floatingActionButton= findViewById(R.id.floatingActionButton);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                player.forbidTouch(false).startPlay();
+                floatingActionButton.setVisibility(View.GONE);
+
+
+            }
+        });
 
     }
 
@@ -188,15 +215,15 @@ public class HPlayerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * 播放本地视频
-     */
-
-    private String getLocalVideoPath(String name) {
-        String sdCard = Environment.getExternalStorageDirectory().getPath();
-        String uri = sdCard + File.separator + name;
-        return uri;
-    }
+//    /**
+//     * 播放本地视频
+//     */
+//
+//    private String getLocalVideoPath(String name) {
+//        String sdCard = Environment.getExternalStorageDirectory().getPath();
+//        String uri = sdCard + File.separator + name;
+//        return uri;
+//    }
 
     @Override
     protected void onPause() {
@@ -220,6 +247,8 @@ public class HPlayerActivity extends AppCompatActivity {
         if (wakeLock != null) {
             wakeLock.acquire();
         }
+
+
     }
 
     @Override
@@ -235,6 +264,12 @@ public class HPlayerActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         if (player != null) {
             player.onConfigurationChanged(newConfig);
+        }else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getActionBar().hide();
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            getActionBar().hide();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 
@@ -249,6 +284,13 @@ public class HPlayerActivity extends AppCompatActivity {
         if (wakeLock != null) {
             wakeLock.release();
         }
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
 //    private  void playMenthod(){
@@ -457,5 +499,46 @@ public class HPlayerActivity extends AppCompatActivity {
 //        }.start();
 //
 //    }
+
+    private class ContentPagerAdapter extends FragmentPagerAdapter {
+        public ContentPagerAdapter(FragmentManager fm){
+            super(fm);
+        }
+        @Override
+        public Fragment getItem(int position) {
+            return tabFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return tabIndicators.size();
+        }
+    }
+    public void initList(){
+        list = new ArrayList<VideoijkBean>();
+//        有部分视频加载有问题，这个视频是有声音显示不出图像的，没有解决http://fzkt-biz.oss-cn-hangzhou.aliyuncs.com/vedio/2f58be65f43946c588ce43ea08491515.mp4
+//        这里模拟一个本地视频的播放，视频需要将testvideo文件夹的视频放到安卓设备的内置sd卡根目录中
+        VideoijkBean m1 = new VideoijkBean();
+        m1.setStream("标清");
+        m1.setUrl("http://192.168.1.101:8090/video/kbd_sd.mp4");
+
+        VideoijkBean m2 = new VideoijkBean();
+        m2.setStream("高清");
+        m2.setUrl("http://192.168.1.101:8090/video/kbd_hd.mp4");
+
+        VideoijkBean m3 = new VideoijkBean();
+        m3.setStream("超清");
+        m3.setUrl("http://192.168.1.101:8090/video/kbd_ud.mp4");
+
+
+        VideoijkBean m4 = new VideoijkBean();
+        m4.setStream("原画");
+        m4.setUrl("http://192.168.1.101:8090/video/kbd.mp4");
+
+        list.add(m1);
+        list.add(m2);
+        list.add(m3);
+        list.add(m4);
+    }
 
 }
