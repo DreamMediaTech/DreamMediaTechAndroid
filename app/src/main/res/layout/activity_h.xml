@@ -43,26 +43,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:fillViewport="true"
         android:id="@+id/comment_scroll_view">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:background="@color/colorPrimary"
             android:orientation="vertical">
-              <android.support.design.widget.TabLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/video_detail"
-                  android:background="@color/light_gray">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TabLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/video_detail">
 
-              </android.support.design.widget.TabLayout>
+                </android.support.design.widget.TabLayout>
+            </LinearLayout>
+
               <android.support.v4.view.ViewPager
                   android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/video_viewPager"
-                  android:background="@color/red">
+                  android:layout_height="match_parent"
+                  android:id="@+id/video_viewPager">
 
               </android.support.v4.view.ViewPager>
 

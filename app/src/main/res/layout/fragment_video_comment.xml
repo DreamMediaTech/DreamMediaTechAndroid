@@ -4,10 +4,12 @@
     android:layout_height="match_parent"
     tools:context="com.example.admin.dreammediatechapp.UI.MediaPage.VideoCommentFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <com.github.jdsjlzx.recyclerview.LRecyclerView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/video_comment_list"
+        android:descendantFocusability="blocksDescendants">
+
+    </com.github.jdsjlzx.recyclerview.LRecyclerView>
 
 </FrameLayout>

@@ -23,7 +23,7 @@
             <com.jude.rollviewpager.RollPagerView
                 android:id="@+id/adRoller"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="120dp"
                 >
 
             </com.jude.rollviewpager.RollPagerView>

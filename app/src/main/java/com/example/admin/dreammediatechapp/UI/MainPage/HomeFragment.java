@@ -18,11 +18,14 @@ import android.view.ViewGroup;
 
 import android.widget.ImageView;
 
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
 import com.example.admin.dreammediatechapp.Adapter.HomeShortCutAdapter;
 import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
+import com.example.admin.dreammediatechapp.Adapter.VideoAdapter;
+import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter;
 import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
@@ -124,7 +127,18 @@ public class HomeFragment extends Fragment {
         mRecyclerView=(RecyclerView) view.findViewById(R.id.recommendList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new SimpleDividerDecoration(getActivity()));
-        mRecyclerView.setAdapter(new VideoAdapter());
+        VideoListAdapter videoAdapter = new VideoListAdapter(mRecyclerView,videoList);
+        mRecyclerView.setAdapter(videoAdapter);
+        videoAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
+                switch (position){
+                    case 0:
+                        startActivity(new Intent(getContext(),HPlayerActivity.class));
+                        break;
+                }
+            }
+        });
 
 
         return view;
@@ -171,7 +185,7 @@ public class HomeFragment extends Fragment {
 
     public void shortcutInit(){
         shortcutRecyclerView.setHasFixedSize(true);
-        shortcutRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4));
+        shortcutRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),5));
 
         HomeShortCutAdapter homeShortCutAdapter = new HomeShortCutAdapter(shortcutRecyclerView);
        shortcutRecyclerView.setAdapter(homeShortCutAdapter);
@@ -192,7 +206,7 @@ public class HomeFragment extends Fragment {
         //设置适配器
         mRollPageViewPager.setAdapter(new TestNormalAdapter());
         //设置圆点指示器颜色
-        mRollPageViewPager.setHintView(new ColorPointHintView(getContext(), Color.BLACK,Color.BLUE));
+        mRollPageViewPager.setHintView(new ColorPointHintView(getContext(), R.color.black,R.color.colorPrimary));
         mRollPageViewPager.setHintAlpha(1);
 
 
@@ -219,62 +233,5 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
-
-    private class VideoHolder extends RecyclerView.ViewHolder {
-        private Video mVideo;
-        private ConstraintLayout item_layout;
-        private ImageView video_cover;
-        private TextView video_title,video_owner,video_categories,video_watch;
-
-
-
-        public VideoHolder(LayoutInflater inflater, ViewGroup parent) {
-        super(inflater.inflate(R.layout.video_list_layout,parent,false));
-
-
-        video_cover=(ImageView)itemView.findViewById(R.id.video_list_cover);
-        video_title=(TextView)itemView.findViewById(R.id.video_list_title);
-        video_owner=(TextView)itemView.findViewById(R.id.video_list_owner);
-        video_categories=(TextView)itemView.findViewById(R.id.video_list_categories);
-        video_watch=(TextView)itemView.findViewById(R.id.video_list_watch);
-
-        video_cover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent play = new Intent(getActivity(), HPlayerActivity.class);
-                Bundle bundle = new Bundle();
-                startActivity(play);
-
-            }
-        });
-    }
-}
-
-
-
-    private class VideoAdapter extends RecyclerView.Adapter<VideoHolder> {
-        @Override
-        public VideoHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
-            return new VideoHolder(inflater,viewGroup);
-        }
-
-        @Override
-        public void onBindViewHolder(VideoHolder holder, int i) {
-            Video video = videoList.get(i);
-            holder.mVideo=video;
-            holder.video_cover.setImageResource(R.mipmap.banner2);
-            holder.video_title.setText(video.getvTitle());
-            holder.video_owner.setText(video.getAuthor().getuName());
-            holder.video_categories.setText(video.getFirstType().getVtName());
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return videoList.size();
-        }
-    }
 
 }

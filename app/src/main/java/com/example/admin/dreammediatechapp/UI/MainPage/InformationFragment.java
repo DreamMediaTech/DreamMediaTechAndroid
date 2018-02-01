@@ -28,6 +28,7 @@ import com.example.admin.dreammediatechapp.UI.InformationPage.SettingsActivity;
 import com.example.admin.dreammediatechapp.UI.InformationPage.UserInfoActivity;
 import com.example.admin.dreammediatechapp.UI.LoginPage.LoginActivity;
 import com.example.admin.dreammediatechapp.UI.LoginPage.UserLoginActivity;
+import com.example.admin.dreammediatechapp.common.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,8 +47,8 @@ public class InformationFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private RecyclerView mRecyclerView,mRecyclerView2;
-    private ImageView user_image;
-    private TextView user_name;
+    private CircleImageView user_image;
+    private TextView user_name,userChar;
     SharedPreferences sp;
 
     public static InformationFragment newInstance() {
@@ -97,6 +98,7 @@ public class InformationFragment extends Fragment {
         mRecyclerView2 = (RecyclerView)view.findViewById(R.id.shopping_recycle);
         user_image = view.findViewById(R.id.user_image);
         user_name = view.findViewById(R.id.user_name);
+        userChar=view.findViewById(R.id.user_char);
         sp=getActivity().getSharedPreferences("LoginState",Context.MODE_PRIVATE);
 
 
@@ -166,6 +168,7 @@ public class InformationFragment extends Fragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4));
         InformationAdapter informationAdapter = new InformationAdapter(mRecyclerView);
         mRecyclerView.setAdapter(informationAdapter);
+
         informationAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
@@ -211,8 +214,12 @@ public class InformationFragment extends Fragment {
     public void CheckLoginState(){
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("LoginState",Context.MODE_PRIVATE);
         String username = sharedPreferences.getString("name",null);
+        String userType = sharedPreferences.getString("type",null);
         if (username!=null){
             user_name.setText(username);
+            userChar.setText(userType);
+
+
         }
     }
 }

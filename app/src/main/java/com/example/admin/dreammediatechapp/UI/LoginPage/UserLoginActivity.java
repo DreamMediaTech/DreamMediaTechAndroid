@@ -67,7 +67,7 @@ public class UserLoginActivity extends AppCompatActivity{
     private EditText loginName,loginPassword;
     private Button loginButton,registerButton;
     private TextView forgetPassword;
-    private String loginUrl="http://192.168.1.101:8080/Dream/MobileUserController/AppLogin.action";
+    private String loginUrl="http://192.168.1.107:8080/Dream/mobileUserController/AppLogin.action";
     private String TAG="UserLoginActivity";
 
     @Override
@@ -127,12 +127,13 @@ public class UserLoginActivity extends AppCompatActivity{
     }
 
 
-    public void CreateLoginState(String username){
+    public void CreateLoginState(User user){
         if(sp == null){
             sp = getSharedPreferences(FILE,MODE_PRIVATE);
         }
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString("name",loginName.getText().toString());
+        editor.putString("name",user.getuNickName());
+        editor.putString("type",user.getuType());
         editor.commit();
         Toast.makeText(getApplicationContext(),"执行方法",Toast.LENGTH_LONG).show();
     }
@@ -160,8 +161,9 @@ public class UserLoginActivity extends AppCompatActivity{
                                 JsonElement je = new JsonParser().parse(result);
                                 Log.d(TAG,"获取返回码"+je.getAsJsonObject().get("status"));
                                 Log.d(TAG,"获取返回信息"+je.getAsJsonObject().get("data"));
-                                UserJsonData(je.getAsJsonObject().get("data"));
-                                showResponse(je.getAsJsonObject().get("status").toString());
+                                 User user= UserJsonData(je.getAsJsonObject().get("data"));
+
+                                showResponse(je.getAsJsonObject().get("status").toString(),user);
                             }
 
                         }
@@ -178,14 +180,14 @@ public class UserLoginActivity extends AppCompatActivity{
             }
         }.start();
     }
-    private  void showResponse(final  String response){
+    private  void showResponse(final  String response, final User user){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 switch (response){
                     case "200":
                         Toast.makeText(getApplicationContext(),"登录成功",Toast.LENGTH_LONG).show();
-                        CreateLoginState(loginName.getText().toString());
+                        CreateLoginState(user);
                         finish();
                         break;
                     case "500":

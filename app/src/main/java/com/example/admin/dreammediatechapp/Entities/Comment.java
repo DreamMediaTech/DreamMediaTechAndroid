@@ -2,27 +2,29 @@ package com.example.admin.dreammediatechapp.Entities;
 
 public class Comment {
 	private int cId;
-	private int cUser;
-	private int cResponsibility;
+	private User cUser;
+	private User cResponsibility;
 	private String cContent;
 	private int cState;
 	private Video video;
+	private String cTime;
 	public int getcId() {
 		return cId;
 	}
 	public void setcId(int cId) {
 		this.cId = cId;
 	}
-	public int getcUser() {
+	
+	public User getcUser() {
 		return cUser;
 	}
-	public void setcUser(int cUser) {
+	public void setcUser(User cUser) {
 		this.cUser = cUser;
 	}
-	public int getcResponsibility() {
+	public User getcResponsibility() {
 		return cResponsibility;
 	}
-	public void setcResponsibility(int cResponsibility) {
+	public void setcResponsibility(User cResponsibility) {
 		this.cResponsibility = cResponsibility;
 	}
 	public String getcContent() {
@@ -43,6 +45,13 @@ public class Comment {
 	public void setVideo(Video video) {
 		this.video = video;
 	}
+	public String getcTime() {
+		return cTime;
+	}
+	public void setcTime(String cTime) {
+		this.cTime = cTime;
+	}
+	
 	
 	
 	

@@ -136,8 +136,6 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.hide();
-
-
         }
 
 

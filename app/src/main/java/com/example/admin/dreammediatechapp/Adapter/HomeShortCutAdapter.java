@@ -16,11 +16,11 @@ import com.example.admin.dreammediatechapp.R;
 public class HomeShortCutAdapter extends AbsRecyclerViewAdapter {
     private String []itemNames  = new String[]{
             "初中物理","初中数学","初中语文","初中英语",
-            "高中数学","高中英语","高中生物","更多推荐"
+            "高中数学","高中英语","高中生物","高中物理","高中地理","更多推荐"
     };
     private int[] itemIcons  = new int[]{
             R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round,
-            R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round
+            R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round,R.mipmap.ic_launcher_round
     };
 
     public HomeShortCutAdapter(RecyclerView recyclerView) {
