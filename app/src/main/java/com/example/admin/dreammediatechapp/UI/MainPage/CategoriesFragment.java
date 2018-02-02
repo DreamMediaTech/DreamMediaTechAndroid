@@ -3,6 +3,8 @@ package com.example.admin.dreammediatechapp.UI.MainPage;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,19 +12,39 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
+import com.example.admin.dreammediatechapp.Entities.User;
+import com.example.admin.dreammediatechapp.Entities.Video;
+import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.CategoriesPage.SubCategoriesFragment;
 import com.example.admin.dreammediatechapp.oneFragment;
 import com.example.admin.dreammediatechapp.threeFragment;
 import com.example.admin.dreammediatechapp.twoFragment;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +56,6 @@ import java.util.List;
  */
 public class CategoriesFragment extends Fragment {
 
-
     private OnFragmentInteractionListener mListener;
 
     private TabLayout mTab;
@@ -43,6 +64,9 @@ public class CategoriesFragment extends Fragment {
     private List<Fragment> tabFragments;
     private ContentPagerAdapter contentAdapter;
     private Fragment one,two,three;
+    private List<VideoType> videoTypeList  ;
+    private TimerTask timerTask;
+    private final Timer timer = new Timer();
 
     public CategoriesFragment() {
         // Required empty public constructor
@@ -52,29 +76,42 @@ public class CategoriesFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment CategoriesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CategoriesFragment newInstance(String param1, String param2) {
+    public static CategoriesFragment newInstance(List<VideoType> videoTypeList) {
         CategoriesFragment fragment = new CategoriesFragment();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
+        ArrayList list = new ArrayList();
+        list.add(videoTypeList);
+        args.putParcelableArrayList("list",list);
         fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
+        if (getArguments() != null) {
+            ArrayList list = getArguments().getParcelableArrayList("list");
+            videoTypeList = (List<VideoType>)list.get(0);
+            for (VideoType videoType:videoTypeList){
+                Log.d("Cates",videoType.getVtName());
+            }
+        }
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                //GetCategories();
+            }
+        };
+        timer.schedule(timerTask,5000,5000);
+
+
 
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,32 +121,52 @@ public class CategoriesFragment extends Fragment {
 
         mViewPager=(ViewPager)view.findViewById(R.id.categories_content);
         mTab=(TabLayout)view.findViewById(R.id.categories_title);
+
+      GetCategories();
+        return view;
+    }
+
+    private void initView(){
         mTab.setTabMode(TabLayout.MODE_SCROLLABLE);
-        mTab.setTabTextColors(ContextCompat.getColor(getContext(), R.color.gray), ContextCompat.getColor(getContext(), R.color.gray));
+        mTab.setTabTextColors(ContextCompat.getColor(getContext(), R.color.white), ContextCompat.getColor(getContext(), R.color.white));
         mTab.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.white));
         mTab.setupWithViewPager(mViewPager);
+
         tabIndicators = new ArrayList<>();
         tabFragments = new ArrayList<>();
-        for (int i =0;i<9;i++){
-            tabIndicators.add("视频分类");
-            tabFragments.add(new oneFragment());
+//        for (int i =0;i<9;i++){
+//            tabIndicators.add("视频分类");
+//            tabFragments.add(new oneFragment());
+//
+//        }
+//        for (VideoType videoType:videoTypeList){
+//            Log.d("Frage",videoType.getVtName());
+//            tabIndicators.add(videoType.getVtName());
+//            tabFragments.add(new oneFragment());
+//        }
 
-        }
         contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(contentAdapter);
-
         for(int i=0;i<tabIndicators.size();i++){
             TabLayout.Tab itemTab = mTab.getTabAt(i);
             if (itemTab!=null){
                 itemTab.setText("视频分类"+i);
             }
-            mTab.getTabAt(0).getText();
+           // mTab.getTabAt(0).getText();
         }
 
+//
+//
+//        for(int i=0;i<tabIndicators.size();i++){
+//            TabLayout.Tab itemTab = mTab.getTabAt(i);
+//            if (itemTab!=null){
+//                itemTab.setText("视频分类"+i);
+//            }
+////            mTab.getTabAt(0).getText();
+//        }
 
-        return view;
+
     }
-
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -163,9 +220,105 @@ public class CategoriesFragment extends Fragment {
         public int getCount() {
             return tabIndicators.size();
         }
-
-
-
-
     }
+    private void GetCategories(){
+        final Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    String sendUrl = "http://192.168.1.104:8080/Dream/mobileVideoController/getAllVideoType.action";
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    final Request request = new Request.Builder().url(sendUrl).build();
+                    Call call = okHttpClient.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            String result = response.body().string();
+                            JsonElement je = new JsonParser().parse(result);
+                            Log.d("Categories","获取返回码"+je.getAsJsonObject().get("status"));
+                            Log.d("Categories","获取返回信息"+je.getAsJsonObject().get("data"));
+                            //JsonData(je.getAsJsonObject().get("data"));
+                            //videoTypeList=JsonData(je.getAsJsonObject().get("data"));
+                            UIThread(JsonData(je.getAsJsonObject().get("data")));
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(){
+            public void run(){
+                new Handler(Looper.getMainLooper()).post(runnable);
+            }
+        }.start();
+    }
+    private List<VideoType> JsonData(JsonElement data){
+        Gson gson = new Gson();
+        List<VideoType> videoTypeList = gson.fromJson(data,new TypeToken<List<VideoType>>(){}.getType());
+        for (VideoType videoType:videoTypeList){
+            Log.d("Cate",videoType.getVtName());
+        }
+        return videoTypeList ;
+    }
+
+    private  void UIThread(final List<VideoType> List){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getContext(),"调用UIThread",Toast.LENGTH_LONG);
+//                for (VideoType videoType:List){
+//                    tabIndicators.add(videoType.getVtName());
+//                    tabFragments.add(new oneFragment());
+//                }
+
+//                for(int i=0;i<tabIndicators.size();i++) {
+//                    TabLayout.Tab itemTab = mTab.getTabAt(i);
+//
+//                    if (itemTab != null) {
+////                        itemTab.setText("视频分类" + i);
+//                    itemTab.setText(tabIndicators.get(i));
+//                    }
+//                }
+                mTab.setTabMode(TabLayout.MODE_SCROLLABLE);
+                mTab.setTabTextColors(ContextCompat.getColor(getContext(), R.color.white), ContextCompat.getColor(getContext(), R.color.white));
+                mTab.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.white));
+                mTab.setupWithViewPager(mViewPager);
+                tabIndicators = new ArrayList<>();
+                tabFragments = new ArrayList<>();
+                for (VideoType videoType:List){
+                    Log.d("Frage",videoType.getVtName());
+                    tabIndicators.add(videoType.getVtName());
+                    List<VideoType> subList = videoType.getSubTypes();
+                    for (VideoType videoType1:subList){
+                        Log.d("Cate",videoType1.getVtName());
+                    }
+//                    tabFragments.add(new oneFragment().newInstance(videoType.getVtName()));
+
+                     tabFragments.add(new SubCategoriesFragment().newInstance(subList));
+                }
+
+                contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
+                mViewPager.setAdapter(contentAdapter);
+                for(int i=0;i<tabIndicators.size();i++) {
+                    TabLayout.Tab itemTab = mTab.getTabAt(i);
+                    if (itemTab != null) {
+                      //  itemTab.setText("视频分类" + i);
+                        itemTab.setText(tabIndicators.get(i));
+                    }
+                }
+
+            }
+        });
+    }
+
+
+
+
 }

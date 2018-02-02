@@ -1,9 +1,13 @@
 package com.example.admin.dreammediatechapp.UI.MainPage;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -12,16 +16,35 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.PermissionChecker;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.ViewParent;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.admin.dreammediatechapp.Entities.Comment;
+import com.example.admin.dreammediatechapp.Entities.User;
+import com.example.admin.dreammediatechapp.Entities.Video;
+import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.CategoriesPage.SubCategoriesFragment;
 import com.example.admin.dreammediatechapp.common.NoScrollViewPager;
 import com.example.admin.dreammediatechapp.oneFragment;
 import com.example.admin.dreammediatechapp.threeFragment;
 import com.example.admin.dreammediatechapp.twoFragment;
+import com.github.jdsjlzx.interfaces.OnNetWorkErrorListener;
+import com.github.jdsjlzx.util.WeakHandler;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +54,14 @@ public class MainActivity extends AppCompatActivity implements
         CategoriesFragment.OnFragmentInteractionListener,
         GiftFragment.OnFragmentInteractionListener,
         InformationFragment.OnFragmentInteractionListener,
-        oneFragment.OnFragmentInteractionListener, twoFragment.OnFragmentInteractionListener,threeFragment.OnFragmentInteractionListener{
+        oneFragment.OnFragmentInteractionListener,
+        twoFragment.OnFragmentInteractionListener,
+        threeFragment.OnFragmentInteractionListener,
+        SubCategoriesFragment.OnFragmentInteractionListener{
 
 
     private FragmentPagerAdapter mAdpater;//Fragement适配器
-    private List<Fragment> mFragment;//Fragment集合
+    private List<Fragment> mFragment = new ArrayList<>();//Fragment集合
     private MenuItem menuItem;
     private NoScrollViewPager mViewPager;
     private BottomNavigationView navigationView;
@@ -58,6 +84,26 @@ public class MainActivity extends AppCompatActivity implements
             R.string.no_read_external_storage_permission,
     };
 
+    public List<VideoType> videoTypeList = new ArrayList<>() ;
+    CategoriesFragment categoriesFragment=new CategoriesFragment();
+
+//    private WeakHandler mHandler = new WeakHandler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            switch (msg.what) {
+//
+//                case -1:
+//                    Bundle bundle = msg.getData();
+//                    ArrayList llist= new ArrayList();
+//                            llist=bundle.getParcelableArrayList("llist");
+//                    videoTypeList=(List<VideoType>) llist.get(0);
+//                  break;
+//                default:
+//                    break;
+//            }
+//        }
+//    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements
         permissionCheck();
 
         initData();
+
+
 
 
     }
@@ -101,10 +149,19 @@ public class MainActivity extends AppCompatActivity implements
         navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);//添加底部导航栏切换监听
         BottomNavigationViewHelper.disableShiftMode(navigationView);//去除底部导航栏动画
 
-        mFragment=new ArrayList<>();
+
+
+
+        if (videoTypeList.size()==0){
+            Toast.makeText(this,"列表为空",Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(this,"列表不为空",Toast.LENGTH_LONG).show();
+        }
         //添加Ftagment
+
+
         mFragment.add(new HomeFragment());
-        mFragment.add(new CategoriesFragment());
+        mFragment.add(categoriesFragment);
         mFragment.add(new MediaFragment());
         mFragment.add(new GiftFragment());
         mFragment.add(new InformationFragment());
@@ -124,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements
                 return mFragment.size();
             }
         };
+        mAdpater.notifyDataSetChanged();
 
         /**
          * 初始化ViewPager
@@ -190,4 +248,5 @@ public class MainActivity extends AppCompatActivity implements
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 }
