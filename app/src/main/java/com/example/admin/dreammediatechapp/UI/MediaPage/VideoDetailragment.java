@@ -1,14 +1,31 @@
 package com.example.admin.dreammediatechapp.UI.MediaPage;
 
 import android.content.Context;
+import android.icu.text.UnicodeSetSpanner;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.R;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +44,11 @@ public class VideoDetailragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String VideoTitle,VideoCategories,VideoAuthor,VideoIntro,quota;
+    private int VideoWatch,VideoPrice,vId,uId;
+    private Button buyVideo;
 
+    private TextView videoTile,videoCate,videoTime,videoWatch,videoContent,videoAuthor;
     private OnFragmentInteractionListener mListener;
 
     public VideoDetailragment() {
@@ -37,17 +58,21 @@ public class VideoDetailragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment VideoDetailragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static VideoDetailragment newInstance(String param1, String param2) {
+    public static VideoDetailragment newInstance(Video video,String quota,int vId,int uId) {
         VideoDetailragment fragment = new VideoDetailragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString("VideoTitle",video.getvTitle());
+        args.putString("VideoCate",video.getFirstType().getVtName());
+        args.putInt("VideoWatch",video.getvNum());
+        args.putString("VideoAuthor",video.getAuthor().getuNickName());
+        args.putString("VideoIntro",video.getvIntroduce());
+        args.putInt("VideoPrice",video.getvPrice());
+        args.putString("Quota",quota);
+        args.putInt("vId",vId);
+        args.putInt("uId",uId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,16 +81,48 @@ public class VideoDetailragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            VideoTitle = getArguments().getString("VideoTitle");
+            VideoCategories = getArguments().getString("VideoCate");
+            VideoWatch  = getArguments().getInt("VideoWatch");
+            VideoAuthor = getArguments().getString("VideoAuthor");
+            VideoIntro = getArguments().getString("VideoIntro");
+            VideoPrice = getArguments().getInt("VideoPrice");
+            quota = getArguments().getString("Quota");
+            vId  =getArguments().getInt("vId");
+            uId = getArguments().getInt("uId");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_video_detailragment, container, false);
+        View view= inflater.inflate(R.layout.fragment_video_detailragment, container, false);
+        videoTile = view.findViewById(R.id.Video_title);
+        videoAuthor = view.findViewById(R.id.video_owner);
+        videoCate = view.findViewById(R.id.video_categories);
+        videoWatch = view.findViewById(R.id.video_watch);
+        videoContent = view.findViewById(R.id.video_intro);
+        buyVideo = view.findViewById(R.id.video_buy);
+
+        videoTile.setText(VideoTitle);
+        videoCate.setText(VideoCategories);
+        videoContent.setText(VideoIntro);
+        videoWatch.setText(String.valueOf(VideoWatch));
+        videoAuthor.setText(VideoAuthor);
+        if (quota.equals("0")){
+            buyVideo.setText("花费"+VideoPrice+"积分观看视频");
+        }else {
+            buyVideo.setText("剩余"+quota+"次观看次数");
+            buyVideo.setClickable(false);
+        }
+        buyVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BuyVideo(uId,vId);
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,5 +162,59 @@ public class VideoDetailragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void BuyVideo(final int uid,final int vid){
+        final Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    String sendUrl2="http://192.168.1.100:8080/Dream/mobileVideoController/buyVideo.action?vid="+vid+"&uid="+uid;
+
+                    Log.d("HPA",sendUrl2);
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    final Request request = new Request.Builder().url(sendUrl2).build();
+                    Call call = okHttpClient.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            String result = response.body().string();
+                            Log.d("VDF",result);
+                            BuyState(result);
+
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(){
+            public void run(){
+                new Handler(Looper.getMainLooper()).post(runnable);
+            }
+        }.start();
+    }
+
+    private  void BuyState(final String result){
+       getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (result.equals("5")){
+                    Toast.makeText(getContext(),"购买失败",Toast.LENGTH_LONG).show();
+                }else
+                {
+                    Toast.makeText(getContext(),"购买成功",Toast.LENGTH_LONG).show();
+                    buyVideo.setClickable(false);
+                    buyVideo.setText("剩余3次观看次数");
+                }
+            }
+        });
     }
 }

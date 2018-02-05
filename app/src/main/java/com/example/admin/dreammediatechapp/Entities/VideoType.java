@@ -1,8 +1,9 @@
 package com.example.admin.dreammediatechapp.Entities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class VideoType {
+public class VideoType  implements Serializable{
 	private int vtId;
 	private String vtName;
 	private int vtFather;
@@ -31,6 +32,8 @@ public class VideoType {
 	public void setSubTypes(List<VideoType> subTypes) {
 		this.subTypes = subTypes;
 	}
+
+
 	
 	
 }

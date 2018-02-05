@@ -63,7 +63,6 @@ public class CategoriesFragment extends Fragment {
     private List<String> tabIndicators;
     private List<Fragment> tabFragments;
     private ContentPagerAdapter contentAdapter;
-    private Fragment one,two,three;
     private List<VideoType> videoTypeList  ;
     private TimerTask timerTask;
     private final Timer timer = new Timer();
@@ -122,51 +121,10 @@ public class CategoriesFragment extends Fragment {
         mViewPager=(ViewPager)view.findViewById(R.id.categories_content);
         mTab=(TabLayout)view.findViewById(R.id.categories_title);
 
-      GetCategories();
+         GetCategories();
         return view;
     }
 
-    private void initView(){
-        mTab.setTabMode(TabLayout.MODE_SCROLLABLE);
-        mTab.setTabTextColors(ContextCompat.getColor(getContext(), R.color.white), ContextCompat.getColor(getContext(), R.color.white));
-        mTab.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.white));
-        mTab.setupWithViewPager(mViewPager);
-
-        tabIndicators = new ArrayList<>();
-        tabFragments = new ArrayList<>();
-//        for (int i =0;i<9;i++){
-//            tabIndicators.add("视频分类");
-//            tabFragments.add(new oneFragment());
-//
-//        }
-//        for (VideoType videoType:videoTypeList){
-//            Log.d("Frage",videoType.getVtName());
-//            tabIndicators.add(videoType.getVtName());
-//            tabFragments.add(new oneFragment());
-//        }
-
-        contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
-        mViewPager.setAdapter(contentAdapter);
-        for(int i=0;i<tabIndicators.size();i++){
-            TabLayout.Tab itemTab = mTab.getTabAt(i);
-            if (itemTab!=null){
-                itemTab.setText("视频分类"+i);
-            }
-           // mTab.getTabAt(0).getText();
-        }
-
-//
-//
-//        for(int i=0;i<tabIndicators.size();i++){
-//            TabLayout.Tab itemTab = mTab.getTabAt(i);
-//            if (itemTab!=null){
-//                itemTab.setText("视频分类"+i);
-//            }
-////            mTab.getTabAt(0).getText();
-//        }
-
-
-    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -226,7 +184,7 @@ public class CategoriesFragment extends Fragment {
             @Override
             public void run() {
                 try{
-                    String sendUrl = "http://192.168.1.104:8080/Dream/mobileVideoController/getAllVideoType.action";
+                    String sendUrl = "http://192.168.1.100:8080/Dream/mobileVideoController/getAllVideoType.action";
                     OkHttpClient okHttpClient = new OkHttpClient();
                     final Request request = new Request.Builder().url(sendUrl).build();
                     Call call = okHttpClient.newCall(request);
@@ -301,7 +259,7 @@ public class CategoriesFragment extends Fragment {
                     }
 //                    tabFragments.add(new oneFragment().newInstance(videoType.getVtName()));
 
-                     tabFragments.add(new SubCategoriesFragment().newInstance(subList));
+                     tabFragments.add(new SubCategoriesFragment().newInstance(subList,videoType.getVtName()));
                 }
 
                 contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
@@ -313,6 +271,7 @@ public class CategoriesFragment extends Fragment {
                         itemTab.setText(tabIndicators.get(i));
                     }
                 }
+
 
             }
         });

@@ -21,9 +21,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -45,7 +45,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity android:name=".UI.LoginPage.RegisterActivity" />
         <activity android:name=".UI.LoginPage.PasswordActivity" />
@@ -71,12 +70,13 @@
         <activity
             android:name=".UI.LoginPage.UserLoginActivity"
             android:label="@string/title_activity_user_login" />
-        <activity android:name=".UI.MediaPage.PlayerActivity">
+        <activity android:name=".UI.MediaPage.PlayerActivity"></activity>
+        <!-- 极光SMS -->
+        <meta-data
+            android:name="JPUSH_APPKEY"
+            android:value="6686812c0bd0b603d0cab38f" />
 
-        </activity>
-        <!-- 极光SMS-->
-        <meta-data android:name="JPUSH_APPKEY" android:value="6686812c0bd0b603d0cab38f"/>
-
+        <activity android:name=".UI.CategoriesPage.CategoriesDetailActivity"></activity>
     </application>
 
 </manifest>

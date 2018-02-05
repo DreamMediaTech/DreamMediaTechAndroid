@@ -67,7 +67,7 @@ public class UserLoginActivity extends AppCompatActivity{
     private EditText loginName,loginPassword;
     private Button loginButton,registerButton;
     private TextView forgetPassword;
-    private String loginUrl="http://192.168.1.107:8080/Dream/mobileUserController/AppLogin.action";
+    private String loginUrl="http://192.168.1.100:8080/Dream/mobileUserController/AppLogin.action";
     private String TAG="UserLoginActivity";
 
     @Override
@@ -134,8 +134,8 @@ public class UserLoginActivity extends AppCompatActivity{
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("name",user.getuNickName());
         editor.putString("type",user.getuType());
+        editor.putInt("uId",user.getuId());
         editor.commit();
-        Toast.makeText(getApplicationContext(),"执行方法",Toast.LENGTH_LONG).show();
     }
 
     private void LoginAction(final String Registerurl, final String loginName, final String loginPassword ){

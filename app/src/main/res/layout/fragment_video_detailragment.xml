@@ -13,46 +13,59 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/Video_title"
-                android:textSize="@dimen/video_list_title"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="高中物理之抛物线详解"/>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/video_categories"
-                    android:layout_marginRight="10dp"
-                    android:text="高中·物理"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/video_time"
-                    android:layout_marginRight="10dp"
-                    android:text="2018-01-01"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/video_watch"
-                    android:text="20.6万"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/video_credit"
-                    android:textColor="@color/alivc_green"
-                    android:layout_marginLeft="100dp"
-                    android:layout_gravity="end"
-                    android:text="观看积分"/>
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal">
+               <LinearLayout
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical"
+                   android:layout_weight="1">
+                   <TextView
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/Video_title"
+                       android:textSize="@dimen/video_list_title"
+                       android:textColor="@color/black"
+                       android:textStyle="bold"
+                       android:text="高中物理之抛物线详解"/>
+                   <LinearLayout
+                       android:layout_width="wrap_content"
+                       android:layout_height="match_parent"
+                       android:orientation="horizontal"
+                       android:layout_marginTop="10dp">
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:id="@+id/video_categories"
+                           android:layout_marginRight="10dp"
+                           android:text="高中·物理"/>
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:id="@+id/video_time"
+                           android:layout_marginRight="10dp"
+                           android:text="2018-01-01"/>
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:id="@+id/video_watch"
+                           android:text="20.6万"/>
 
-            </LinearLayout>
+                   </LinearLayout>
+
+
+               </LinearLayout>
+               <Button
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/video_buy"
+                   android:padding="5dp"
+
+                   android:elevation="@dimen/dp_10"
+                   android:text=""/>
+           </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,6 +82,7 @@
                     android:id="@+id/video_owner"
                     android:text="赵忠祥老师"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:textSize="@dimen/video_list_title"/>
                 <ImageView
                     android:layout_width="30dp"
@@ -80,11 +94,19 @@
                     />
 
             </LinearLayout>
+            <View
+                android:layout_height="1dp"
+                android:layout_width="match_parent"
+                android:background="#90909090"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
+                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="视频简介"/>
+                android:text="视频简介"
+                android:textStyle="bold"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

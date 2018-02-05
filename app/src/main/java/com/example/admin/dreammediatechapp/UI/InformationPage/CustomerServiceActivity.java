@@ -81,17 +81,6 @@ public class CustomerServiceActivity extends AppCompatActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     private class ContentPagerAdapter extends FragmentPagerAdapter {
         public ContentPagerAdapter(FragmentManager fm){
             super(fm);
@@ -106,4 +95,16 @@ public class CustomerServiceActivity extends AppCompatActivity implements
             return tabIndicators.size();
         }
     }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
+
 }

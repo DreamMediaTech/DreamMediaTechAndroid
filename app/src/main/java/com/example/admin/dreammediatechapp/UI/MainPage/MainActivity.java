@@ -150,13 +150,6 @@ public class MainActivity extends AppCompatActivity implements
         BottomNavigationViewHelper.disableShiftMode(navigationView);//去除底部导航栏动画
 
 
-
-
-        if (videoTypeList.size()==0){
-            Toast.makeText(this,"列表为空",Toast.LENGTH_LONG).show();
-        }else {
-            Toast.makeText(this,"列表不为空",Toast.LENGTH_LONG).show();
-        }
         //添加Ftagment
 
 

@@ -1,8 +1,10 @@
 package com.example.admin.dreammediatechapp.UI.CategoriesPage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,7 @@ import com.example.admin.dreammediatechapp.Adapter.SubCategoriesAdapter;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +35,7 @@ public class SubCategoriesFragment extends Fragment {
 
     private List<VideoType> subTypeList = new ArrayList<>();
     private RecyclerView subTypeRecyclerView ;
+    private String vtName;
 
     private OnFragmentInteractionListener mListener;
 
@@ -39,12 +43,13 @@ public class SubCategoriesFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static SubCategoriesFragment newInstance(List<VideoType> llist) {
+    public static SubCategoriesFragment newInstance(List<VideoType> llist,String vtName ) {
         SubCategoriesFragment fragment = new SubCategoriesFragment();
         Bundle args = new Bundle();
         ArrayList list = new ArrayList();
         list.add(llist);
         args.putParcelableArrayList("list",list);
+        args.putString("vtName",vtName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,13 +59,12 @@ public class SubCategoriesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             ArrayList list = getArguments().getParcelableArrayList("list");
+           vtName= getArguments().getString("vtName");
 
             subTypeList = (List<VideoType>)list.get(0);
-            if (subTypeList.size()==0){
-                Log.d("Cate","列表为空");
-            }
             for (VideoType videoType:subTypeList){
                 Log.d("Cate","Sub"+videoType.getVtName());
+                Log.d("Cate","Sub"+vtName);
             }
         }
     }
@@ -78,9 +82,16 @@ public class SubCategoriesFragment extends Fragment {
         subCategoriesAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
-                switch (position){
 
-                }
+                        Intent intent= new Intent(getContext(),CategoriesDetailActivity.class);
+                        Bundle bundle= new Bundle();
+                        bundle.putString("vtName",subTypeList.get(position).getVtName());
+                        bundle.putInt("vtId",subTypeList.get(position).getVtId());
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
+
+
             }
         });
         return view;

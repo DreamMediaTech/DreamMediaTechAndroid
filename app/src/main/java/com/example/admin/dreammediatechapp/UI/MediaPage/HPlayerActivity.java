@@ -1,6 +1,8 @@
 package com.example.admin.dreammediatechapp.UI.MediaPage;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -8,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -35,13 +38,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.dreammediatechapp.Adapter.ContentPagerAdapter;
+import com.example.admin.dreammediatechapp.Entities.Video;
+import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.Entities.VideoijkBean;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.UI.InformationPage.IMServiceFragment;
+import com.example.admin.dreammediatechapp.UI.LoginPage.UserLoginActivity;
 import com.example.admin.dreammediatechapp.Utils.MediaUtils;
 import com.example.admin.dreammediatechapp.media.PlayStateParams;
 import com.example.admin.dreammediatechapp.media.PlayerView;
+import com.github.jdsjlzx.interfaces.OnNetWorkErrorListener;
+import com.github.jdsjlzx.util.WeakHandler;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -51,6 +61,7 @@ import com.squareup.okhttp.Response;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -63,14 +74,18 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
     private List<VideoijkBean> list;
     private PowerManager.WakeLock wakeLock;
     View rootView;
-    private String url,url2,url3,url4;
+    private String url,url2,url3,url4,quota;
     private TabLayout tab;
     private ViewPager viewPager;
     private List<String> tabIndicators;
     private List<Fragment> tabFragments;
-    private ContentPagerAdapter contentPagerAdapter;
-    private String listUrl,listUrl2,listUrl3,listUrl4;
+    private ContentPagerAdapter contentPagerAdapter = new ContentPagerAdapter(getSupportFragmentManager());
     private FloatingActionButton floatingActionButton;
+    private  int vId,uId;
+    private  Video video;
+    private  boolean playAble=false;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,39 +93,16 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
         this.mContext = this;
         rootView = getLayoutInflater().from(this).inflate(R.layout.activity_h, null);
         setContentView(rootView);
-
-        /*
-        测试URL
-         */
-        url="http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
-        url2="http://192.168.1.103:10088/EasyTrans/Data/30a0b2f0ffde11e7813defa4ae4d6b2f/video.m3u8";
-        url3="http://player.alicdn.com/video/aliyunmedia.mp4";
+            Bundle bundle = this.getIntent().getExtras();
+            vId = bundle.getInt("vId");
 
 
+        GetVideo();
+        CheckLoginState();
+        CheckUser(uId,vId);
+        PlayVideo(uId,vId);
 
-        viewPager=findViewById(R.id.video_viewPager);
-        tab=(TabLayout)findViewById(R.id.video_detail);
-        tab.setTabMode(TabLayout.MODE_SCROLLABLE);
-        tab.setTabTextColors(ContextCompat.getColor(this, R.color.colorPrimary), ContextCompat.getColor(this, R.color.colorPrimary));
-        tab.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        tab.setupWithViewPager(viewPager);
-        tabIndicators = new ArrayList<String>();
-        tabFragments = new ArrayList<>();
-        String commentTitle="评论";
-        tabIndicators.add("视频简介");
-        tabIndicators.add(commentTitle);
-        tabFragments.add(new VideoDetailragment());
-        tabFragments.add(new VideoCommentFragment());
-        contentPagerAdapter = new ContentPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(contentPagerAdapter);
 
-        for (int i=0;i<tabIndicators.size();i++){
-            TabLayout.Tab itemTab = tab.getTabAt(i);
-            if(itemTab!=null){
-                itemTab.setText(tabIndicators.get(i).toString());
-            }
-            tab.getTabAt(0).getText();
-        }
 
         /**虚拟按键的隐藏方法*/
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -144,57 +136,31 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "liveTAG");
         wakeLock.acquire();
 
-        list = new ArrayList<VideoijkBean>();
-//        有部分视频加载有问题，这个视频是有声音显示不出图像的，没有解决http://fzkt-biz.oss-cn-hangzhou.aliyuncs.com/vedio/2f58be65f43946c588ce43ea08491515.mp4
-//        这里模拟一个本地视频的播放，视频需要将testvideo文件夹的视频放到安卓设备的内置sd卡根目录中
-        VideoijkBean m1 = new VideoijkBean();
-        m1.setStream("标清");
-        m1.setUrl("http://192.168.1.101:8090/video/kbd_sd.mp4");
-
-        VideoijkBean m2 = new VideoijkBean();
-        m2.setStream("高清");
-        m2.setUrl("http://192.168.1.101:8090/video/kbd_hd.mp4");
-
-        VideoijkBean m3 = new VideoijkBean();
-        m3.setStream("超清");
-        m3.setUrl("http://192.168.1.101:8090/video/kbd_ud.mp4");
 
 
-        VideoijkBean m4 = new VideoijkBean();
-        m4.setStream("原画");
-        m4.setUrl("http://192.168.1.101:8090/video/kbd.mp4");
 
-        list.add(m1);
-        list.add(m2);
-        list.add(m3);
-        list.add(m4);
 
-        player = new PlayerView(this, rootView) {
-            @Override
-            public PlayerView toggleProcessDurationOrientation() {
-                hideSteam(getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                return setProcessDurationOrientation(getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ? PlayStateParams.PROCESS_PORTRAIT : PlayStateParams.PROCESS_LANDSCAPE);
-            }
 
-            @Override
-            public PlayerView setPlaySource(List<VideoijkBean> list) {
-                return super.setPlaySource(list);
-            }
-        }
-                .setTitle("测试播放")
-                .setProcessDurationOrientation(PlayStateParams.PROCESS_PORTRAIT)
-                .setScaleType(PlayStateParams.fillparent)
-                .forbidTouch(true)
-                .hideSteam(false)
-                .hideCenterPlayer(true)
-                .setPlaySource(list);
 
         floatingActionButton= findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                player.forbidTouch(false).startPlay();
-                floatingActionButton.setVisibility(View.GONE);
+
+                if (uId==0){
+                    Toast.makeText(getApplicationContext(),"请先登录",Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(),UserLoginActivity.class));
+                }
+                else if (playAble){
+
+                    player.forbidTouch(false).hideCenterPlayer(false).startPlay();
+                    floatingActionButton.setVisibility(View.GONE);
+
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"您还未购买此视频",Toast.LENGTH_LONG).show();
+                }
+
 
 
             }
@@ -212,16 +178,6 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    /**
-//     * 播放本地视频
-//     */
-//
-//    private String getLocalVideoPath(String name) {
-//        String sdCard = Environment.getExternalStorageDirectory().getPath();
-//        String uri = sdCard + File.separator + name;
-//        return uri;
-//    }
 
     @Override
     protected void onPause() {
@@ -291,213 +247,150 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
 
     }
 
-//    private  void playMenthod(){
-//
-//    }
-//    private void CleanComment(){
-//        final Runnable runnable=new Runnable() {
-//            @Override
-//            public void run() {
-//                try{
-//                    String sendComment = comment.getText().toString();
-//                    String sendUrl = "http://119.29.114.73/MessageDemo/MessageServlet?method=clean";
-//                    OkHttpClient okHttpClient = new OkHttpClient();
-//                    final Request request = new Request.Builder().url(sendUrl).build();
-//                    Call call = okHttpClient.newCall(request);
-//                    AfterSend();
-//                    call.enqueue(new Callback() {
-//                        @Override
-//                        public void onFailure(Request request, IOException e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onResponse(Response response) throws IOException {
-//
-//                        }
-//                    });
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        new Thread(){
-//            public void run(){
-//                new Handler(Looper.getMainLooper()).post(runnable);
-//            }
-//        }.start();
-//    }
-//    private void sendComment(){
-//        final Runnable runnable=new Runnable() {
-//            @Override
-//            public void run() {
-//                try{
-//                    String sendComment = comment.getText().toString();
-//                    String sendUrl = "http://119.29.114.73/MessageDemo/MessageServlet?method=send&message="+sendComment;
-//                    Toast.makeText(getApplicationContext(),"发送成功", Toast.LENGTH_LONG).show();
-//                    OkHttpClient okHttpClient = new OkHttpClient();
-//                    final Request request = new Request.Builder().url(sendUrl).build();
-//                    Call call = okHttpClient.newCall(request);
-//                    AfterSend();
-//                    call.enqueue(new Callback() {
-//                        @Override
-//                        public void onFailure(Request request, IOException e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onResponse(Response response) throws IOException {
-//
-//                        }
-//                    });
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        new Thread(){
-//            public void run(){
-//                new Handler(Looper.getMainLooper()).post(runnable);
-//            }
-//        }.start();
-//    }
-//    private void AfterSend(){
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                InputMethodManager imm =(InputMethodManager)getSystemService(
-//                        Context.INPUT_METHOD_SERVICE);
-//                imm.hideSoftInputFromWindow(comment.getWindowToken(), 0);
-//                comment.setText("");
-//            }
-//        });
-//    }
-//
-//    private void getData() {
-//        final Runnable runnable2=new Runnable() {
-//            @Override
-//            public void run() {
-//                try{
-//                    Thread.sleep(1000);
-//                    String getUrl="http://119.29.114.73/MessageDemo/MessageServlet?method=getMessage";
-//                    //在子线程中执行Http请求，并将最终的请求结果回调到okhttp3.Callback中
-//
-//                    OkHttpClient okHttpClient = new OkHttpClient();
-//                    final Request request = new Request.Builder().url(getUrl).get().build();
-//                    //得到服务器返回的具体内容
-//                    Call call =okHttpClient.newCall(request);
-//                    call.enqueue(new Callback() {
-//                        @Override
-//                        public void onFailure(Request request, IOException e) {
-//
-//                        }
-//
-//
-//
-//                        @Override
-//                        public void onResponse(Response response) throws IOException {
-//
-//                            String responseData = response.body().string();
-//                            parseJSONWithGSON(responseData);
-//                            Log.d("VodActivity","jsonData"+responseData);
-//                            // showResponse(responseData.toString());
-//
-//                        }
-//                    });
-//
-//
-//
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        new Thread(){
-//            public void run(){
-//                new Handler(Looper.getMainLooper()).post(runnable2);
-//            }
-//        }.start();
-//
-//    }
-//    private void parseJSONWithGSON(String jsonData) throws IOException {
-//        //使用轻量级的Gson解析得到的json
-//        Gson gson = new Gson();
-//        appList = gson.fromJson(jsonData, new TypeToken<List<String >>(){}.getType());
-//
-//        // appList = gson.fromJson(jsonData, new TypeToken<List<CommentEntites>>() {}.getType());
-//
-//    }
-//    private void showResponse(final String response) {
-//        //在子线程中更新UI
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                // 在这里进行UI操作，将结果显示到界面上
-//
-//                for (int i =1 ; i<appList.size();i++) {
-//                    //控制台输出结果，便于查看
-//                    //Log.d("MainActivity", "other" + app.getContent());
-//                    Log.d("VodActivity","jsonData"+response);
-//                    //appList.add(0,response);
-//                    //recyclerView.setAdapter(mRecyclerViewAdapter=new RecyclerViewAdapter(getApplicationContext(),appList));
-//                    //mRecyclerViewAdapter.notifyItemInserted(0);
-//                    String allStr = "";
-//                    for (String str:appList){
-//                        allStr = allStr + str;
-//                    }
-//                    single_text.setText(allStr);
-//                    comment_seoll_view.fullScroll(ScrollView.FOCUS_DOWN);
-//
-//                }
-//
-//            }
-//        });
-//    }
-//    private void getSingleData() {
-//        final Runnable runnable2=new Runnable() {
-//            @Override
-//            public void run() {
-//                try{
-//                    Thread.sleep(1000);
-//                    String getUrl="http://119.29.114.73/MessageDemo/MessageServlet?method=getMessage";
-//                    //在子线程中执行Http请求，并将最终的请求结果回调到okhttp3.Callback中
-//
-//                    OkHttpClient okHttpClient = new OkHttpClient();
-//                    final Request request = new Request.Builder().url(getUrl).get().build();
-//                    //得到服务器返回的具体内容
-//                    Call call =okHttpClient.newCall(request);
-//                    call.enqueue(new Callback() {
-//                        @Override
-//                        public void onFailure(Request request, IOException e) {
-//
-//                        }
-//                        @Override
-//                        public void onResponse(Response response) throws IOException {
-//
-//                            String responseData = response.body().string();
-//                            parseJSONWithGSON(responseData);
-//                            Log.d("VodActivity","jsonData"+responseData);
-//                            showResponse(responseData.toString());
-//
-//
-//                        }
-//                    });
-//
-//
-//
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        new Thread(){
-//            public void run(){
-//                new Handler(Looper.getMainLooper()).post(runnable2);
-//            }
-//        }.start();
-//
-//    }
+    private void GetVideo(){
+        final Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    String sendUrl2="http://192.168.1.100:8080/Dream/mobileVideoController/getVideoById.action?vid="+vId;
 
+                    Log.d("HPA",sendUrl2);
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    final Request request = new Request.Builder().url(sendUrl2).build();
+                    Call call = okHttpClient.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            String result = response.body().string();
+                            JsonElement je = new JsonParser().parse(result);
+                            Log.d("HDA","获取返回码"+je.getAsJsonObject().get("status"));
+                            Log.d("HDA","获取返回信息"+je.getAsJsonObject().get("data"));
+                           // JsonData(je.getAsJsonObject().get("data"));
+                            //videoList=JsonData(je.getAsJsonObject().get("data"));
+                            video=JsonData(je.getAsJsonObject().get("data"));
+                            List<VideoijkBean> list = PlaySetting(video);
+                            UIThread(video);
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(){
+            public void run(){
+                new Handler(Looper.getMainLooper()).post(runnable);
+            }
+        }.start();
+    }
+    private Video JsonData(JsonElement data){
+        Gson gson = new Gson();
+        Type type = new TypeToken<Video>(){}.getType();
+        Video video = gson.fromJson(data,type);
+
+            Log.d("HDA",video.getvTitle());
+            Log.d("HDA",video.getvIntroduce());
+
+
+        return video ;
+    }
+    private void UIThread(final Video video){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                list =new ArrayList<VideoijkBean>();
+                VideoijkBean m1 = new VideoijkBean();
+                m1.setStream("标清");
+                m1.setUrl(video.getvAddress_sd());
+                Log.d("HDA","播放地址"+m1.getUrl());
+
+
+
+                VideoijkBean m2 = new VideoijkBean();
+                m2.setStream("高清");
+                m2.setUrl(video.getvAddress_hd());
+                Log.d("HDA","播放地址"+m2.getUrl());
+
+                VideoijkBean m3 = new VideoijkBean();
+                m3.setStream("超清");
+                m3.setUrl(video.getvAddress_ud());
+                Log.d("HDA","播放地址"+m3.getUrl());
+
+
+                VideoijkBean m4 = new VideoijkBean();
+                m4.setStream("原画");
+                m4.setUrl(video.getvAddress());
+                Log.d("HDA","播放地址"+m4.getUrl());
+
+                list.add(m1);
+                list.add(m2);
+                list.add(m3);
+                list.add(m4);
+
+
+
+                viewPager=findViewById(R.id.video_viewPager);
+                tab=(TabLayout)findViewById(R.id.video_detail);
+                tab.setTabMode(TabLayout.MODE_SCROLLABLE);
+                tab.setTabTextColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary), ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+                tab.setSelectedTabIndicatorColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+                tab.setupWithViewPager(viewPager);
+                tabIndicators = new ArrayList<String>();
+                tabFragments = new ArrayList<>();
+                String commentTitle="评论";
+                tabIndicators.add("视频简介");
+                tabIndicators.add(commentTitle);
+                tabFragments.add(new VideoDetailragment().newInstance(video,quota,vId,uId));
+                tabFragments.add(new VideoCommentFragment());
+                viewPager.setAdapter(contentPagerAdapter);
+
+                for (int i=0;i<tabIndicators.size();i++){
+                    TabLayout.Tab itemTab = tab.getTabAt(i);
+                    if(itemTab!=null){
+                        itemTab.setText(tabIndicators.get(i).toString());
+                    }
+                    tab.getTabAt(0).getText();
+                }
+
+
+                player = new PlayerView(HPlayerActivity.this, rootView) {
+                    @Override
+                    public PlayerView toggleProcessDurationOrientation() {
+                        hideSteam(getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        return setProcessDurationOrientation(getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ? PlayStateParams.PROCESS_PORTRAIT : PlayStateParams.PROCESS_LANDSCAPE);
+                    }
+
+                    @Override
+                    public PlayerView setPlaySource(List<VideoijkBean> list) {
+                        return super.setPlaySource(list);
+                    }
+                }
+                        .setTitle(video.getvTitle())
+                        .setProcessDurationOrientation(PlayStateParams.PROCESS_PORTRAIT)
+                        .setScaleType(PlayStateParams.fillparent)
+                        .forbidTouch(true)
+                        .hideSteam(false)
+                        .hideCenterPlayer(true)
+                        .setPlaySource(list);
+
+            }
+        });
+    }
+    public void CheckLoginState(){
+        SharedPreferences sharedPreferences=getApplication().getSharedPreferences("LoginState",Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString("name",null);
+        String userType = sharedPreferences.getString("type",null);
+        int uIdint=sharedPreferences.getInt("uId",0);
+        if (username!=null){
+            uId=uIdint;
+        }
+    }
     private class ContentPagerAdapter extends FragmentPagerAdapter {
         public ContentPagerAdapter(FragmentManager fm){
             super(fm);
@@ -512,31 +405,99 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
             return tabIndicators.size();
         }
     }
-    public void initList(){
-        list = new ArrayList<VideoijkBean>();
-//        有部分视频加载有问题，这个视频是有声音显示不出图像的，没有解决http://fzkt-biz.oss-cn-hangzhou.aliyuncs.com/vedio/2f58be65f43946c588ce43ea08491515.mp4
-//        这里模拟一个本地视频的播放，视频需要将testvideo文件夹的视频放到安卓设备的内置sd卡根目录中
-        VideoijkBean m1 = new VideoijkBean();
-        m1.setStream("标清");
-        m1.setUrl("http://192.168.1.101:8090/video/kbd_sd.mp4");
-
-        VideoijkBean m2 = new VideoijkBean();
-        m2.setStream("高清");
-        m2.setUrl("http://192.168.1.101:8090/video/kbd_hd.mp4");
-
-        VideoijkBean m3 = new VideoijkBean();
-        m3.setStream("超清");
-        m3.setUrl("http://192.168.1.101:8090/video/kbd_ud.mp4");
+    public List<VideoijkBean> PlaySetting(Video video){
 
 
-        VideoijkBean m4 = new VideoijkBean();
-        m4.setStream("原画");
-        m4.setUrl("http://192.168.1.101:8090/video/kbd.mp4");
 
-        list.add(m1);
-        list.add(m2);
-        list.add(m3);
-        list.add(m4);
+        return list;
     }
+
+    private void CheckUser(final int uid,final int vid){
+        final Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    String sendUrl2="http://192.168.1.100:8080/Dream/mobileVideoController/getUserVideoQuota.action?vid="+vid+"&uid="+uid;
+                    Log.d("HPA",sendUrl2);
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    final Request request = new Request.Builder().url(sendUrl2).build();
+                    Call call = okHttpClient.newCall(request);
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            String result = response.body().string();
+                            JsonElement je = new JsonParser().parse(result);
+                            Log.d("HDA","获取返回码"+je.getAsJsonObject().get("status"));
+                            Log.d("HDA","获取返回信息"+je.getAsJsonObject().get("data"));
+                            quota = je.getAsJsonObject().get("data").toString();
+                            Log.d("HDA","获取返回信息"+quota);
+                            if (!quota.equals("0")){
+                                playAble=true;
+                            }
+
+
+
+                            // JsonData(je.getAsJsonObject().get("data"));
+                            //videoList=JsonData(je.getAsJsonObject().get("data"));
+
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(){
+            public void run(){
+                new Handler(Looper.getMainLooper()).post(runnable);
+            }
+        }.start();
+    }
+
+    private void PlayVideo(final int uid,final int vid){
+        final Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    String sendUrl2="http://192.168.1.100:8080/Dream/mobileVideoController/userStartVideo.action?vid="+vid+"&uid="+uid;
+
+                    Log.d("HPA",sendUrl2);
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    final Request request = new Request.Builder().url(sendUrl2).build();
+                    Call call = okHttpClient.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            String result = response.body().string();
+                            JsonElement je = new JsonParser().parse(result);
+                            Log.d("HDA","44"+je.getAsJsonObject().get("status"));
+                            Log.d("HDA","44"+je.getAsJsonObject().get("data"));
+
+
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(){
+            public void run(){
+                new Handler(Looper.getMainLooper()).post(runnable);
+            }
+        }.start();
+    }
+
 
 }
