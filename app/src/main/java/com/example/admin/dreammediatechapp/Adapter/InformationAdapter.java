@@ -16,7 +16,7 @@ import com.example.admin.dreammediatechapp.R;
 public class InformationAdapter extends AbsRecyclerViewAdapter {
     //个人中心菜单标题
     private String[] itemNames = new String[]{
-        "个人信息","我的积分","我的推广","我的分享","上传视频","上传历史","设置中心","热门提问"
+        "个人信息","我的积分","我的推广","我的分享","上传历史","设置中心","热门提问"
     };
 
     //个人中心菜单Icon
@@ -24,7 +24,7 @@ public class InformationAdapter extends AbsRecyclerViewAdapter {
            R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round,
             R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round,
             R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round,
-            R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round
+            R.mipmap.ic_launcher_round
     };
 
     public InformationAdapter(RecyclerView recyclerView) {

@@ -184,7 +184,7 @@ public class CategoriesFragment extends Fragment {
             @Override
             public void run() {
                 try{
-                    String sendUrl = "http://192.168.1.100:8080/Dream/mobileVideoController/getAllVideoType.action";
+                    String sendUrl = "http://119.29.114.73/Dream/mobileVideoController/getAllVideoType.action";
                     OkHttpClient okHttpClient = new OkHttpClient();
                     final Request request = new Request.Builder().url(sendUrl).build();
                     Call call = okHttpClient.newCall(request);
@@ -271,8 +271,6 @@ public class CategoriesFragment extends Fragment {
                         itemTab.setText(tabIndicators.get(i));
                     }
                 }
-
-
             }
         });
     }

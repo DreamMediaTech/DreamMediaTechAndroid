@@ -52,7 +52,7 @@ import java.util.List;
 public class CategoriesDetailActivity extends AppCompatActivity{
 
     /**服务器端一共多少条数据*/
-    private static final int TOTAL_COUNTER = 34;//如果服务器没有返回总数据或者总页数，这里设置为最大值比如10000，什么时候没有数据了根据接口返回判断
+    private int TOTAL_COUNTER =10000;//如果服务器没有返回总数据或者总页数，这里设置为最大值比如10000，什么时候没有数据了根据接口返回判断
 
     /**每一页展示多少条数据*/
     private static final int REQUEST_COUNT = 10;
@@ -69,7 +69,7 @@ public class CategoriesDetailActivity extends AppCompatActivity{
 
     private List<Video> videoList = new ArrayList<>();
 
-    private int vtId;
+    private int vtId ;
 
     private  Bundle bundle = new Bundle();
 
@@ -84,22 +84,12 @@ public class CategoriesDetailActivity extends AppCompatActivity{
 
                     int currentSize = videoListAdapter2.getItemCount();
 
-//                    //模拟组装10个数据
-//                    ArrayList<ItemModel> newList = new ArrayList<>();
-//                    for (int i = 0; i < 10; i++) {
-//                        if (newList.size() + currentSize >= TOTAL_COUNTER) {
-//                            break;
-//                        }
-//
-//                        ItemModel item = new ItemModel();
-//                        item.id = currentSize + i;
-//                        item.title = "item" + (item.id);
-//
-//                        newList.add(item);
-//                    }
-//                    ArrayList arrayList = msg.getData().getParcelableArrayList("videoList");
-//                    List<Video> videoList=arrayList.get(0);
 
+                    if (currentSize>=TOTAL_COUNTER){
+                        Toast.makeText(getApplicationContext(),"已经没有了",Toast.LENGTH_LONG).show();
+                        mRecyclerView.refreshComplete(REQUEST_COUNT);
+                        break;
+                    }
                     addItems(videoList);
 
                     mRecyclerView.refreshComplete(REQUEST_COUNT);
@@ -168,7 +158,8 @@ public class CategoriesDetailActivity extends AppCompatActivity{
         });
         //是否禁用自动加载更多功能,false为禁用, 默认开启自动加载更多功能
         mRecyclerView.setLoadMoreEnabled(true);
-
+        //设置底部加载文字提示
+        mRecyclerView.setFooterViewHint("拼命加载中","我是有底线的","网络不给力啊，点击再试一次吧");
         mRecyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -247,7 +238,7 @@ public class CategoriesDetailActivity extends AppCompatActivity{
             @Override
             public void run() {
                 try{
-                    String sendUrl = "http://192.168.1.100:8080/Dream/mobileVideoController/getAllVideoByType.action?type="+vtId+"&start="+mCurrentCounter+"&num=10";
+                    String sendUrl = "http://119.29.114.73/Dream/mobileVideoController/getAllVideoByType.action?type="+vtId+"&start="+mCurrentCounter+"&num=10";
                     Log.d("CDA",sendUrl);
                     OkHttpClient okHttpClient = new OkHttpClient();
                     final Request request = new Request.Builder().url(sendUrl).build();
@@ -263,13 +254,12 @@ public class CategoriesDetailActivity extends AppCompatActivity{
                         public void onResponse(Response response) throws IOException {
                             String result = response.body().string();
                             JsonElement je = new JsonParser().parse(result);
-                            Log.d("CL","获取返回码"+je.getAsJsonObject().get("status"));
-                            Log.d("CL","获取返回信息"+je.getAsJsonObject().get("data"));
+                            Log.d("CDA","获取返回码"+je.getAsJsonObject().get("status"));
+                            Log.d("CDA","获取返回信息"+je.getAsJsonObject().get("data"));
+                            Log.d("CDA","获取返回信息"+je.getAsJsonObject().get("count").getAsInt());
                             //JsonData(je.getAsJsonObject().get("data"));
                             videoList=JsonData(je.getAsJsonObject().get("data"));
-//                            ArrayList arrayList = new ArrayList();
-//                            arrayList.add(videoList);
-//                            bundle.putStringArrayList("videoList",arrayList);
+                            TOTAL_COUNTER=je.getAsJsonObject().get("count").getAsInt();
                             Message msg=new Message();
                             msg.what=-1;
 //                            msg.setData(bundle);
@@ -297,30 +287,7 @@ public class CategoriesDetailActivity extends AppCompatActivity{
         }
         return videoList ;
     }
-    private  void UIThread(final List<VideoType> List){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(),"调用UIThread",Toast.LENGTH_LONG);
-//                for (VideoType videoType:List){
-//                    tabIndicators.add(videoType.getVtName());
-//                    tabFragments.add(new oneFragment());
-//                }
 
-//                for(int i=0;i<tabIndicators.size();i++) {
-//                    TabLayout.Tab itemTab = mTab.getTabAt(i);
-//
-//                    if (itemTab != null) {
-////                        itemTab.setText("视频分类" + i);
-//                    itemTab.setText(tabIndicators.get(i));
-//                    }
-//                }
-
-
-
-            }
-        });
-    }
 
 
 

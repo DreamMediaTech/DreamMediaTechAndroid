@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
-    app:cardElevation="5dp"
-    app:cardMaxElevation="8dp"
+    app:cardElevation="2dp"
+    app:cardMaxElevation="2dp"
     app:cardUseCompatPadding="true"
     app:contentPadding="5dp"
 >
@@ -16,9 +16,11 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/article_cover"
-        android:layout_width="345dp"
+        android:layout_width="366dp"
         android:layout_height="165dp"
         android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,8 +30,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="5dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_margin="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,18 +38,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/article_cover">
 
-        <TextView
-            android:id="@+id/article_title"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="这是你不得不看的十句话"
-            android:textSize="@dimen/video_list_title" />
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/article_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="这是你不得不看的十句话"
+                android:textSize="@dimen/video_list_title" />
+
+            <TextView
+                android:id="@+id/article_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="2018-01-01" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/article_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2018-01-01" />
+            android:id="@+id/article_read"
+            android:text="阅读量：10086"
+            android:layout_gravity="bottom"/>
 
     </LinearLayout>
 

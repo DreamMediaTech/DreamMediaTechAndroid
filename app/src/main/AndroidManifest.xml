@@ -70,13 +70,14 @@
         <activity
             android:name=".UI.LoginPage.UserLoginActivity"
             android:label="@string/title_activity_user_login" />
-        <activity android:name=".UI.MediaPage.PlayerActivity"></activity>
+        <activity android:name=".UI.MediaPage.PlayerActivity" />
         <!-- 极光SMS -->
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="6686812c0bd0b603d0cab38f" />
 
-        <activity android:name=".UI.CategoriesPage.CategoriesDetailActivity"></activity>
+        <activity android:name=".UI.CategoriesPage.CategoriesDetailActivity" />
+        <activity android:name=".UI.DreamMediaPage.ArticleDetailActivity"></activity>
     </application>
 
 </manifest>

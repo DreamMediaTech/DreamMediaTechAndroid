@@ -3,6 +3,8 @@ package com.example.admin.dreammediatechapp.UI.MediaPage;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.dreammediatechapp.Adapter.CommentAdapter;
@@ -27,7 +32,17 @@ import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.github.jdsjlzx.recyclerview.ProgressStyle;
 import com.github.jdsjlzx.util.WeakHandler;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +56,9 @@ import java.util.List;
  */
 public class VideoCommentFragment extends Fragment {
     private LRecyclerView lRecyclerView = null;
-    ArrayList<Comment> commentList=new ArrayList<>();
+    private List<Comment> commentList=new ArrayList<>();
     /**服务器端一共多少条数据*/
-    private static final int TOTAL_COUNTER = 34;//如果服务器没有返回总数据或者总页数，这里设置为最大值比如10000，什么时候没有数据了根据接口返回判断
+    private  int TOTAL_COUNTER=10000;//如果服务器没有返回总数据或者总页数，这里设置为最大值比如10000，什么时候没有数据了根据接口返回判断
 
     /**每一页展示多少条数据*/
     private static final int REQUEST_COUNT = 10;
@@ -57,6 +72,13 @@ public class VideoCommentFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private int uId,vId;
+
+    private TextView commentInput;
+
+    private Button sendButton;
+
+
     public VideoCommentFragment() {
         // Required empty public constructor
     }
@@ -67,9 +89,12 @@ public class VideoCommentFragment extends Fragment {
      * @return A new instance of fragment VideoCommentFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static VideoCommentFragment newInstance(String param1, String param2) {
+    public static VideoCommentFragment newInstance(int param1, int param2,int commentCount) {
         VideoCommentFragment fragment = new VideoCommentFragment();
         Bundle args = new Bundle();
+        args.putInt("vId",param1);
+        args.putInt("uId",param2);
+        args.putInt("commentCount",commentCount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,25 +110,12 @@ public class VideoCommentFragment extends Fragment {
                     int currentSize = commentAdapter.getItemCount();
 
 
-                    if (commentList.size()+currentSize>=TOTAL_COUNTER){
+                    if (currentSize>=TOTAL_COUNTER){
                         Toast.makeText(getActivity(),"已经没有了",Toast.LENGTH_LONG).show();
+                        lRecyclerView.refreshComplete(REQUEST_COUNT);
                         break;
-                    }else
-                        for (int i = 1;i<10;i++){
-
-
-                            Comment comment = new Comment();
-                            User user=new User();
-                            user.setuName("第"+i+"个用户");
-                            comment.setcUser(user);
-                            comment.setcTime("2018-01-01");
-                            comment.setcContent("第"+i+"个评论");
-                            commentList.add(comment);
-                        }
-
+                    }
                     addItems(commentList);
-
-
                     lRecyclerView.refreshComplete(REQUEST_COUNT);
 
 
@@ -130,13 +142,17 @@ public class VideoCommentFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        vId = getArguments().getInt("vId");
+        uId = getArguments().getInt("uId");
+        TOTAL_COUNTER = getArguments().getInt("commentCount");
+        Log.d("VCF",String.valueOf(TOTAL_COUNTER));
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_video_comment, container, false);
+        final View view =inflater.inflate(R.layout.fragment_video_comment, container, false);
         // Inflate the layout for this fragment
         lRecyclerView = view.findViewById(R.id.video_comment_list);
         commentAdapter = new CommentAdapter(getContext());
@@ -148,6 +164,22 @@ public class VideoCommentFragment extends Fragment {
         lRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
         lRecyclerView.setArrowImageView(R.drawable.ic_pulltorefresh_arrow);
         lRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+
+        commentInput = view.findViewById(R.id.comment_input);
+        sendButton = view.findViewById(R.id.comment_button);
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (commentInput.getText().toString().equals(null))
+                {
+                    Toast.makeText(getContext(),"请输入评论",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    sendComment(uId,vId);
+                }
+            }
+        });
 
 //        //add a HeaderView
 ////        final View header = LayoutInflater.from(getContext()).inflate(R.layout.sample_header,(ViewGroup)findViewById(android.R.id.content), false);
@@ -161,7 +193,7 @@ public class VideoCommentFragment extends Fragment {
                 commentAdapter.clear();
                 lRecyclerViewAdapter.notifyDataSetChanged();
                 mCurrentCounter = 0;
-                requestData();
+                getComment(uId,vId);
             }
         });
         //是否禁用自动加载更多功能,false为禁用, 默认开启自动加载更多功能
@@ -173,7 +205,7 @@ public class VideoCommentFragment extends Fragment {
 
                 if (mCurrentCounter < TOTAL_COUNTER) {
                     // loading more
-                    requestData();
+                   getComment(uId,vId);
                 } else {
                     //the end
                     lRecyclerView.setNoMore(true);
@@ -256,7 +288,7 @@ public class VideoCommentFragment extends Fragment {
      * 添加数据至Adapter
      * @param list
      */
-    private void addItems(ArrayList<Comment> list) {
+    private void addItems(List<Comment> list) {
 
         commentAdapter.addAll(list);
         mCurrentCounter += list.size();
@@ -291,4 +323,109 @@ public class VideoCommentFragment extends Fragment {
         }.start();
     }
 
+    private void getComment(final int uid,final int vid){
+        final Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    String sendUrl2="http://119.29.114.73/Dream/mobileVideoController/getCommentToApp.action?vid="+vId+"&start="+mCurrentCounter+"&num=5";
+                    Log.d("VCF",sendUrl2);
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    final Request request = new Request.Builder().url(sendUrl2).build();
+                    Call call = okHttpClient.newCall(request);
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            String result = response.body().string();
+                            JsonElement je = new JsonParser().parse(result);
+                            Log.d("VCF","获取返回码"+je.getAsJsonObject().get("status"));
+                            Log.d("VCF","获取返回信息"+je.getAsJsonObject().get("data"));
+                            commentList = JsonData(je.getAsJsonObject().get("data"));
+                            Message msg=new Message();
+                            msg.what=-1;
+//                            msg.setData(bundle);
+                            mHandler.sendMessage(msg);
+
+
+
+                            // JsonData(je.getAsJsonObject().get("data"));
+                            //videoList=JsonData(je.getAsJsonObject().get("data"));
+
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(){
+            public void run(){
+                new Handler(Looper.getMainLooper()).post(runnable);
+            }
+        }.start();
+    }
+    private List<Comment> JsonData(JsonElement data){
+        Gson gson = new Gson();
+        List<Comment> commentList = gson.fromJson(data,new TypeToken<List<Comment>>(){}.getType());
+        for (Comment comment:commentList){
+            Log.d("CDA",comment.getcContent());
+        }
+        return commentList ;
+    }
+
+    private void sendComment(final int uid,final int vid){
+        final Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    String commentContent=commentInput.getText().toString();
+                    String sendUrl2="http://119.29.114.73/Dream/mobileVideoController/insertComment.action?vid="+vid+"&uid="+uid+"&content="+commentContent;
+                    Log.d("VCF",sendUrl2);
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    final Request request = new Request.Builder().url(sendUrl2).build();
+                    Call call = okHttpClient.newCall(request);
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            String result = response.body().string();
+                            JsonElement je = new JsonParser().parse(result);
+                            Log.d("VCF","获取返回码"+je.getAsJsonObject().get("status"));
+                            Log.d("VCF","获取返回信息"+je.getAsJsonObject().get("data"));
+                            AfterSend();
+
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(){
+            public void run(){
+                new Handler(Looper.getMainLooper()).post(runnable);
+            }
+        }.start();
+    }
+    private void AfterSend(){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm =(InputMethodManager)getActivity().getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(commentInput.getWindowToken(), 0);
+                commentInput.setText(null);
+                Toast.makeText(getContext(),"评论成功",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }

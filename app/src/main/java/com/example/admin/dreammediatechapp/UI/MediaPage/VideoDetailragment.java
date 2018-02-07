@@ -1,6 +1,7 @@
 package com.example.admin.dreammediatechapp.UI.MediaPage;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.icu.text.UnicodeSetSpanner;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -118,7 +120,16 @@ public class VideoDetailragment extends Fragment {
         buyVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BuyVideo(uId,vId);
+                SharedPreferences sharedPreferences=getActivity().getSharedPreferences("LoginState",Context.MODE_PRIVATE);
+                String username = sharedPreferences.getString("name",null);
+                String userType = sharedPreferences.getString("type",null);
+                int uIdint=sharedPreferences.getInt("uId",0);
+                if (username!=null){
+                    BuyVideo(uIdint,vId);
+                }else {
+                    Toast.makeText(getContext(),"请先登录",Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -169,7 +180,7 @@ public class VideoDetailragment extends Fragment {
             @Override
             public void run() {
                 try{
-                    String sendUrl2="http://192.168.1.100:8080/Dream/mobileVideoController/buyVideo.action?vid="+vid+"&uid="+uid;
+                    String sendUrl2="http://119.29.114.73/Dream/mobileVideoController/buyVideo.action?vid="+vid+"&uid="+uid;
 
                     Log.d("HPA",sendUrl2);
                     OkHttpClient okHttpClient = new OkHttpClient();
@@ -217,4 +228,5 @@ public class VideoDetailragment extends Fragment {
             }
         });
     }
+
 }

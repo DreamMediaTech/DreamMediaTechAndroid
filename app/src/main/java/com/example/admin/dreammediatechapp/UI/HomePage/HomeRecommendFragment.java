@@ -1,4 +1,4 @@
-package com.example.admin.dreammediatechapp.UI.MainPage;
+package com.example.admin.dreammediatechapp.UI.HomePage;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,23 +7,25 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.admin.dreammediatechapp.Adapter.ArticleListAdapter;
-import com.example.admin.dreammediatechapp.Entities.Article;
+import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter2;
+import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.R;
-import com.example.admin.dreammediatechapp.UI.DreamMediaPage.ArticleDetailActivity;
+import com.example.admin.dreammediatechapp.UI.MainPage.CategoriesFragment;
+import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
+import com.github.jdsjlzx.interfaces.OnItemLongClickListener;
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
 import com.github.jdsjlzx.interfaces.OnNetWorkErrorListener;
 import com.github.jdsjlzx.interfaces.OnRefreshListener;
@@ -45,16 +47,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MediaFragment.OnFragmentInteractionListener} interface
+ * {@link HomeRecommendFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MediaFragment#newInstance} factory method to
+ * Use the {@link HomeRecommendFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MediaFragment extends Fragment {
-
+public class HomeRecommendFragment extends Fragment {
     /**服务器端一共多少条数据*/
     private int TOTAL_COUNTER =10000;//如果服务器没有返回总数据或者总页数，这里设置为最大值比如10000，什么时候没有数据了根据接口返回判断
 
@@ -66,11 +68,14 @@ public class MediaFragment extends Fragment {
 
     private LRecyclerView mRecyclerView = null;
 
-    private ArticleListAdapter articleListAdapter = null;
+    private VideoListAdapter2 videoListAdapter2 = null;
+
 
     private LRecyclerViewAdapter mLRecyclerViewAdapter = null;
 
-    private List<Article> articleList = new ArrayList<>();
+    private List<Video> videoList = new ArrayList<>();
+
+    private OnFragmentInteractionListener mListener;
 
     private WeakHandler mHandler = new WeakHandler() {
         @Override
@@ -80,7 +85,7 @@ public class MediaFragment extends Fragment {
 
                 case -1:
 
-                    int currentSize = articleListAdapter.getItemCount();
+                    int currentSize = videoListAdapter2.getItemCount();
 
 
                     if (currentSize>=TOTAL_COUNTER){
@@ -88,7 +93,7 @@ public class MediaFragment extends Fragment {
                         mRecyclerView.refreshComplete(REQUEST_COUNT);
                         break;
                     }
-                    addItems(articleList);
+                    addItems(videoList);
 
                     mRecyclerView.refreshComplete(REQUEST_COUNT);
 
@@ -99,7 +104,7 @@ public class MediaFragment extends Fragment {
                     mRecyclerView.setOnNetWorkErrorListener(new OnNetWorkErrorListener() {
                         @Override
                         public void reload() {
-                            GetArticleList();
+                            GetVideoList();
                         }
                     });
 
@@ -109,10 +114,7 @@ public class MediaFragment extends Fragment {
             }
         }
     };
-
-    private OnFragmentInteractionListener mListener;
-
-    public MediaFragment() {
+    public HomeRecommendFragment() {
         // Required empty public constructor
     }
 
@@ -120,13 +122,11 @@ public class MediaFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MediaFragment.
+     * @return A new instance of fragment HomeRecommendFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MediaFragment newInstance(String param1, String param2) {
-        MediaFragment fragment = new MediaFragment();
+    public static HomeRecommendFragment newInstance() {
+        HomeRecommendFragment fragment = new HomeRecommendFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -136,34 +136,33 @@ public class MediaFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-        }
 
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_media, container, false);
-       mRecyclerView = view.findViewById(R.id.article_list);
-       articleListAdapter = new ArticleListAdapter(getActivity());
-       mLRecyclerViewAdapter = new LRecyclerViewAdapter(articleListAdapter);
-       mRecyclerView.setAdapter(mLRecyclerViewAdapter);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_home_recommend, container, false);
+        mRecyclerView = (LRecyclerView) view.findViewById(R.id.recommendList);
+        videoListAdapter2 = new VideoListAdapter2(getContext());
+        mLRecyclerViewAdapter = new LRecyclerViewAdapter(videoListAdapter2);
+        mRecyclerView.setAdapter(mLRecyclerViewAdapter);
 
-       mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
         mRecyclerView.setArrowImageView(R.drawable.ic_pulltorefresh_arrow);
         mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-
         mRecyclerView.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
 
-                articleListAdapter.clear();
+                videoListAdapter2.clear();
                 mLRecyclerViewAdapter.notifyDataSetChanged();//fix bug:crapped or attached views may not be recycled. isScrap:false isAttached:true
                 mCurrentCounter = 0;
-                GetArticleList();
+                GetVideoList();
 
             }
         });
@@ -177,7 +176,7 @@ public class MediaFragment extends Fragment {
 
                 if (mCurrentCounter < TOTAL_COUNTER) {
                     // loading more
-                    GetArticleList();
+                    GetVideoList();
                 } else {
                     //the end
                     mRecyclerView.setNoMore(true);
@@ -210,10 +209,10 @@ public class MediaFragment extends Fragment {
         mLRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if (articleListAdapter.getDataList().size() > position) {
-                    Intent intent = new Intent(getContext(), ArticleDetailActivity.class);
+                if (videoListAdapter2.getDataList().size() > position) {
+                    Intent intent = new Intent(getContext(), HPlayerActivity.class);
                     Bundle b=new Bundle();
-                    b.putInt("aId",articleList.get(position).getaId());
+                    b.putInt("vId",videoList.get(position).getvId());
                     intent.putExtras(b);
 
                     startActivity(intent);
@@ -224,20 +223,15 @@ public class MediaFragment extends Fragment {
 
         });
 
+        mLRecyclerViewAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
         return view;
     }
 
-
-
-    private void notifyDataSetChanged() {
-        mLRecyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    private void addItems(List<Article> list) {
-        articleListAdapter.addAll(list);
-        mCurrentCounter += list.size();
-
-    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -276,14 +270,23 @@ public class MediaFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+    private void notifyDataSetChanged() {
+        mLRecyclerViewAdapter.notifyDataSetChanged();
+    }
 
-    private void GetArticleList(){
+    private void addItems(List<Video> list) {
+        videoListAdapter2.addAll(list);
+        mCurrentCounter += list.size();
+
+    }
+
+    private void GetVideoList(){
         final Runnable runnable=new Runnable() {
             @Override
             public void run() {
                 try{
-                    String sendUrl = "http://119.29.114.73/Dream/mobileArticleController/getAllArticleToApp.action?start="+mCurrentCounter+"&num=10";
-                    Log.d("MF",sendUrl);
+                    String sendUrl = "http://119.29.114.73/Dream/mobileVideoController/getAllVideoByType.action?type=6&start="+mCurrentCounter+"&num=10";
+                    Log.d("CDA",sendUrl);
                     OkHttpClient okHttpClient = new OkHttpClient();
                     final Request request = new Request.Builder().url(sendUrl).build();
                     Call call = okHttpClient.newCall(request);
@@ -298,11 +301,11 @@ public class MediaFragment extends Fragment {
                         public void onResponse(Response response) throws IOException {
                             String result = response.body().string();
                             JsonElement je = new JsonParser().parse(result);
-                            Log.d("MF","获取返回码"+je.getAsJsonObject().get("status"));
-                            Log.d("MF","获取返回信息"+je.getAsJsonObject().get("data"));
-//                            Log.d("MF","获取返回信息"+je.getAsJsonObject().get("count").getAsInt());
+                            Log.d("CDA","获取返回码"+je.getAsJsonObject().get("status"));
+                            Log.d("CDA","获取返回信息"+je.getAsJsonObject().get("data"));
+                            Log.d("CDA","获取返回信息"+je.getAsJsonObject().get("count").getAsInt());
                             //JsonData(je.getAsJsonObject().get("data"));
-                            articleList =JsonData(je.getAsJsonObject().get("data"));
+                            videoList=JsonData(je.getAsJsonObject().get("data"));
                             TOTAL_COUNTER=je.getAsJsonObject().get("count").getAsInt();
                             Message msg=new Message();
                             msg.what=-1;
@@ -323,14 +326,12 @@ public class MediaFragment extends Fragment {
             }
         }.start();
     }
-    private List<Article> JsonData(JsonElement data){
+    private List<Video> JsonData(JsonElement data){
         Gson gson = new Gson();
-        List<Article> articleList = gson.fromJson(data,new TypeToken<List<Article>>(){}.getType());
-        for (Article article:articleList){
-            Log.d("MF",article.getaTitle());
+        List<Video> videoList = gson.fromJson(data,new TypeToken<List<Video>>(){}.getType());
+        for (Video video:videoList){
+            Log.d("CDA",video.getvTitle());
         }
-        return articleList ;
+        return videoList ;
     }
-
-
 }

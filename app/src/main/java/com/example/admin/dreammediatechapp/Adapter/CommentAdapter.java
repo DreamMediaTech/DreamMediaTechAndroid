@@ -36,7 +36,7 @@ public class CommentAdapter extends ListBaseAdapter<Comment> {
         TextView commentContent = holder.getView(R.id.comment_content);
 
         circleImageView.setImageResource(R.mipmap.ic_launcher_round);
-        commentUsername.setText(comment.getcUser().getuName());
+        commentUsername.setText(comment.getcUser().getuNickName());
         commentTime.setText(comment.getcTime());
         commentContent.setText(comment.getcContent());
 

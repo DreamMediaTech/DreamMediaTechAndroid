@@ -67,7 +67,7 @@ public class UserLoginActivity extends AppCompatActivity{
     private EditText loginName,loginPassword;
     private Button loginButton,registerButton;
     private TextView forgetPassword;
-    private String loginUrl="http://192.168.1.100:8080/Dream/mobileUserController/AppLogin.action";
+    private String loginUrl="http://119.29.114.73/Dream/mobileUserController/AppLogin.action";
     private String TAG="UserLoginActivity";
 
     @Override

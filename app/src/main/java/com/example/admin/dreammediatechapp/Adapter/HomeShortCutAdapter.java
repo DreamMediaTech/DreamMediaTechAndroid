@@ -30,7 +30,7 @@ public class HomeShortCutAdapter extends AbsRecyclerViewAdapter {
     @Override
     public ClickableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         bindContext(parent.getContext());
-        return new ItemViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.item_info_layout,parent,false));
+        return new ItemViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.item_shortcut_layout,parent,false));
     }
 
     @Override

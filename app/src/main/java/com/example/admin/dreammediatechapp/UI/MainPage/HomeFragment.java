@@ -7,7 +7,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,10 +23,14 @@ import android.view.ViewGroup;
 
 import android.widget.ImageView;
 
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
+import com.bumptech.glide.Glide;
 import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
+import com.example.admin.dreammediatechapp.Adapter.ContentPagerAdapter;
 import com.example.admin.dreammediatechapp.Adapter.HomeShortCutAdapter;
 import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
 import com.example.admin.dreammediatechapp.Adapter.VideoAdapter;
@@ -30,9 +39,11 @@ import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.HomePage.HomeRecommendFragment;
 import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
 import com.example.admin.dreammediatechapp.UI.MediaPage.PlayerActivity;
 import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
+import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
@@ -56,13 +67,22 @@ public class HomeFragment extends Fragment {
 
     private NestedScrollView nestedScrollView;
    private List<Video> videoList = new ArrayList<>();
-    private RecyclerView mRecyclerView,shortcutRecyclerView;
+    private RecyclerView shortcutRecyclerView;
+    private LRecyclerView mRecyclerView;
+    private TabLayout mTab;
+    private ViewPager mViewPager;
+    private List<String> tabIndicators;
+    private List<Fragment> tabFragments;
+    private ContentPagerAdapter contentAdapter;
+    private Fragment one,two,three;
 
+    private ViewFlipper viewFlipper;
+    private List hitList;
+    private int count;
+    private String title[]={
+            "热门推荐","精品课程","考题模拟","直播课程","名师讲解","更多推荐"
+    };
 
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -124,21 +144,45 @@ public class HomeFragment extends Fragment {
         shortcutRecyclerView=(RecyclerView) view.findViewById(R.id.home_shortcut);
         shortcutInit();
 
-        mRecyclerView=(RecyclerView) view.findViewById(R.id.recommendList);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new SimpleDividerDecoration(getActivity()));
-        VideoListAdapter videoAdapter = new VideoListAdapter(mRecyclerView,videoList);
-        mRecyclerView.setAdapter(videoAdapter);
-        videoAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
-                switch (position){
-                    case 0:
-                        startActivity(new Intent(getContext(),HPlayerActivity.class));
-                        break;
-                }
+        mTab = view.findViewById(R.id.home_tab);
+        mViewPager = view.findViewById(R.id.home_content);
+
+        mTab.setTabMode(TabLayout.MODE_SCROLLABLE);
+        mTab.setTabTextColors(ContextCompat.getColor(getContext(), R.color.colorPrimary), ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        mTab.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        mTab.setupWithViewPager(mViewPager);
+        tabIndicators = new ArrayList<>();
+        tabFragments = new ArrayList<>();
+        for(int i=0;i<title.length;i++){
+            tabIndicators.add(title[i]);
+            tabFragments.add(new HomeRecommendFragment().newInstance());
+        }
+        contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(contentAdapter);
+
+
+        for(int i=0;i<tabIndicators.size();i++){
+            TabLayout.Tab itemTab = mTab.getTabAt(i);
+            if (itemTab!=null){
+                itemTab.setText(title[i]);
             }
-        });
+        }
+
+
+        viewFlipper = view.findViewById(R.id.hit_flipper);
+        hitList = new ArrayList();
+        hitList.add("孩子30天提高30分的秘诀？");
+        hitList.add("这些经典例题你一定不能错过");
+        hitList.add("震惊！原来高分学生都是这么学习的");
+        hitList.add("为什么他的孩子经常在玩，成绩却这么好？");
+
+        for (int i=0;i<hitList.size();i++){
+            final  View ll_content = View.inflate(getActivity(),R.layout.item_hit_article,null);
+            TextView tvContent = (TextView) ll_content.findViewById(R.id.tv_content);
+            tvContent.setText(hitList.get(i).toString());
+            viewFlipper.addView(ll_content);
+        }
+
 
 
         return view;
@@ -212,16 +256,18 @@ public class HomeFragment extends Fragment {
 
     }
     private class TestNormalAdapter extends StaticPagerAdapter {
-        private int[] img={
-                R.mipmap.banner1,
-                R.mipmap.banner2,
-                R.mipmap.banner3,
+        private String[] img={
+                "http://f.hiphotos.baidu.com/image/pic/item/503d269759ee3d6db032f61b48166d224e4ade6e.jpg",
+                "http://a.hiphotos.baidu.com/image/pic/item/500fd9f9d72a6059f550a1832334349b023bbae3.jpg",
+                "http://h.hiphotos.baidu.com/image/pic/item/1ad5ad6eddc451da9eed97a0bdfd5266d0163265.jpg"
         };
 
         @Override
         public View getView(ViewGroup container, int position) {
             ImageView imageView=new ImageView(container.getContext());
-            imageView.setImageResource(img[position]);
+            Glide.with(getContext()).load(img[position]).into(imageView);
+
+//            imageView.setImageResource(img[position]);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             return imageView;
@@ -232,6 +278,23 @@ public class HomeFragment extends Fragment {
             return img.length;
         }
     }
+    private class ContentPagerAdapter extends FragmentPagerAdapter {
+        public ContentPagerAdapter(FragmentManager fm){
+            super(fm);
+        }
+        @Override
+        public Fragment getItem(int position) {
+            return tabFragments.get(position);
+        }
 
+        @Override
+        public int getCount() {
+            return tabIndicators.size();
+        }
+
+
+
+
+    }
 
 }

@@ -74,7 +74,7 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
     private List<VideoijkBean> list;
     private PowerManager.WakeLock wakeLock;
     View rootView;
-    private String url,url2,url3,url4,quota;
+    private String url,url2,url3,url4,quota="0";
     private TabLayout tab;
     private ViewPager viewPager;
     private List<String> tabIndicators;
@@ -95,7 +95,6 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
         setContentView(rootView);
             Bundle bundle = this.getIntent().getExtras();
             vId = bundle.getInt("vId");
-
 
         GetVideo();
         CheckLoginState();
@@ -252,7 +251,7 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
             @Override
             public void run() {
                 try{
-                    String sendUrl2="http://192.168.1.100:8080/Dream/mobileVideoController/getVideoById.action?vid="+vId;
+                    String sendUrl2="http://119.29.114.73/Dream/mobileVideoController/getVideoById.action?vid="+vId;
 
                     Log.d("HPA",sendUrl2);
                     OkHttpClient okHttpClient = new OkHttpClient();
@@ -343,11 +342,11 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
                 tab.setupWithViewPager(viewPager);
                 tabIndicators = new ArrayList<String>();
                 tabFragments = new ArrayList<>();
-                String commentTitle="评论";
+                String commentTitle="评论("+video.getvCommentCount()+")";
                 tabIndicators.add("视频简介");
                 tabIndicators.add(commentTitle);
                 tabFragments.add(new VideoDetailragment().newInstance(video,quota,vId,uId));
-                tabFragments.add(new VideoCommentFragment());
+                tabFragments.add(new VideoCommentFragment().newInstance(vId,uId,video.getvCommentCount()));
                 viewPager.setAdapter(contentPagerAdapter);
 
                 for (int i=0;i<tabIndicators.size();i++){
@@ -389,6 +388,7 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
         int uIdint=sharedPreferences.getInt("uId",0);
         if (username!=null){
             uId=uIdint;
+
         }
     }
     private class ContentPagerAdapter extends FragmentPagerAdapter {
@@ -417,7 +417,7 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
             @Override
             public void run() {
                 try{
-                    String sendUrl2="http://192.168.1.100:8080/Dream/mobileVideoController/getUserVideoQuota.action?vid="+vid+"&uid="+uid;
+                    String sendUrl2="http://119.29.114.73/Dream/mobileVideoController/getUserVideoQuota.action?vid="+vid+"&uid="+uid;
                     Log.d("HPA",sendUrl2);
                     OkHttpClient okHttpClient = new OkHttpClient();
                     final Request request = new Request.Builder().url(sendUrl2).build();
@@ -464,7 +464,7 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
             @Override
             public void run() {
                 try{
-                    String sendUrl2="http://192.168.1.100:8080/Dream/mobileVideoController/userStartVideo.action?vid="+vid+"&uid="+uid;
+                    String sendUrl2="http://192.168.1.102:8080/Dream/mobileVideoController/userStartVideo.action?vid="+vid+"&uid="+uid;
 
                     Log.d("HPA",sendUrl2);
                     OkHttpClient okHttpClient = new OkHttpClient();

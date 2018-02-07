@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.example.admin.dreammediatechapp.UI.InformationPage.UserInfoActivity;
 import com.example.admin.dreammediatechapp.UI.LoginPage.LoginActivity;
 import com.example.admin.dreammediatechapp.UI.LoginPage.UserLoginActivity;
 import com.example.admin.dreammediatechapp.common.CircleImageView;
+import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -165,7 +167,8 @@ public class InformationFragment extends Fragment {
     public void initRecyclerView(){
         //个人中心
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.addItemDecoration(new SimpleDividerDecoration(getActivity()));
         InformationAdapter informationAdapter = new InformationAdapter(mRecyclerView);
         mRecyclerView.setAdapter(informationAdapter);
 
@@ -182,13 +185,13 @@ public class InformationFragment extends Fragment {
                     case 3:
                         startActivity(new Intent(getContext(), MyShareActivity.class ));
                         break;
-                    case 5:
+                    case 4:
                         startActivity(new Intent(getContext(), MyVideoActivity.class));
                         break;
-                    case 6:
+                    case 5:
                         startActivity(new Intent(getContext(), SettingsActivity.class));
                         break;
-                    case 7:
+                    case 6:
                         startActivity(new Intent(getContext(), CustomerServiceActivity.class));
                 }
             }
@@ -196,7 +199,8 @@ public class InformationFragment extends Fragment {
 
         //商城
         mRecyclerView2.setHasFixedSize(true);
-        mRecyclerView2.setLayoutManager(new GridLayoutManager(getActivity(),4));
+        mRecyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView2.addItemDecoration(new SimpleDividerDecoration(getActivity()));
         ShoppingAdapter shoppingAdapter = new ShoppingAdapter(mRecyclerView2);
         mRecyclerView2.setAdapter(shoppingAdapter);
         shoppingAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {

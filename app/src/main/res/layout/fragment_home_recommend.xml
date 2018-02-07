@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.admin.dreammediatechapp.UI.MainPage.MediaFragment">
+    tools:context="com.example.admin.dreammediatechapp.UI.HomePage.HomeRecommendFragment">
 
     <com.github.jdsjlzx.recyclerview.LRecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp_10"
-        android:id="@+id/article_list">
+        android:layout_height="fill_parent"
+        android:id="@+id/recommendList"
+        android:nestedScrollingEnabled="false">
 
     </com.github.jdsjlzx.recyclerview.LRecyclerView>
 </FrameLayout>

@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.common.CircleImageView;
 
 public class UserInfoActivity extends AppCompatActivity {
+    private CircleImageView  circleImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +22,7 @@ public class UserInfoActivity extends AppCompatActivity {
 
         }
         actionBar.setTitle("个人信息");
+//        circleImageView = findViewById(R.id.user_image);
     }
     //监听标题栏
     @Override

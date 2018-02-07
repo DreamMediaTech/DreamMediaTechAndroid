@@ -28,6 +28,7 @@ import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.UI.CategoriesPage.SubCategoriesFragment;
+import com.example.admin.dreammediatechapp.UI.HomePage.HomeRecommendFragment;
 import com.example.admin.dreammediatechapp.common.NoScrollViewPager;
 import com.example.admin.dreammediatechapp.oneFragment;
 import com.example.admin.dreammediatechapp.threeFragment;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements
         oneFragment.OnFragmentInteractionListener,
         twoFragment.OnFragmentInteractionListener,
         threeFragment.OnFragmentInteractionListener,
-        SubCategoriesFragment.OnFragmentInteractionListener{
+        SubCategoriesFragment.OnFragmentInteractionListener,HomeRecommendFragment.OnFragmentInteractionListener{
 
 
     private FragmentPagerAdapter mAdpater;//Fragement适配器
