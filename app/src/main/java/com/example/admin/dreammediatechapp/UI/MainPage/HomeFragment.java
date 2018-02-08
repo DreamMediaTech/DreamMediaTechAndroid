@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.webkit.WebView;
 import android.widget.ImageView;
 
 import android.widget.LinearLayout;
@@ -39,6 +40,7 @@ import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.DreamMediaPage.ArticleDetailActivity;
 import com.example.admin.dreammediatechapp.UI.HomePage.HomeRecommendFragment;
 import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
 import com.example.admin.dreammediatechapp.UI.MediaPage.PlayerActivity;
@@ -109,22 +111,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        for (int i = 1;i<10;i++){
-            Video video=new Video();
-
-            User user=new User();
-            user.setuName("第"+i+"个作者");
-            video.setAuthor(user);
-            video.setvTitle("第"+i+"个视频");
-            video.setvNum(100);
-            VideoType videoType=new VideoType();
-            videoType.setVtName("分类一");
-            video.setFirstType(videoType);
-            video.setvNum(111*i);
-            videoList.add(video);
-        }
-
     }
 
     @Override
@@ -268,6 +254,14 @@ public class HomeFragment extends Fragment {
             Glide.with(getContext()).load(img[position]).into(imageView);
 
 //            imageView.setImageResource(img[position]);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), WebViewActivity.class);
+                    startActivity(intent);
+
+                }
+            });
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             return imageView;

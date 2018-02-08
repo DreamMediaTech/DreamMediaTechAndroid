@@ -1,6 +1,7 @@
 package com.example.admin.dreammediatechapp.UI.MediaPage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.text.UnicodeSetSpanner;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.LoginPage.UserLoginActivity;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.squareup.okhttp.Call;
@@ -46,10 +48,10 @@ public class VideoDetailragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private String VideoTitle,VideoCategories,VideoAuthor,VideoIntro,quota;
-    private int VideoWatch,VideoPrice,vId,uId;
+    private String VideoTitle,VideoCategories,VideoAuthor,VideoIntro;
+    private int VideoWatch,VideoPrice,vId,uId,quota;
     private Button buyVideo;
-
+    int uIdint;
     private TextView videoTile,videoCate,videoTime,videoWatch,videoContent,videoAuthor;
     private OnFragmentInteractionListener mListener;
 
@@ -63,7 +65,7 @@ public class VideoDetailragment extends Fragment {
      * @return A new instance of fragment VideoDetailragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static VideoDetailragment newInstance(Video video,String quota,int vId,int uId) {
+    public static VideoDetailragment newInstance(Video video,int quota,int vId,int uId) {
         VideoDetailragment fragment = new VideoDetailragment();
         Bundle args = new Bundle();
         args.putString("VideoTitle",video.getvTitle());
@@ -72,12 +74,14 @@ public class VideoDetailragment extends Fragment {
         args.putString("VideoAuthor",video.getAuthor().getuNickName());
         args.putString("VideoIntro",video.getvIntroduce());
         args.putInt("VideoPrice",video.getvPrice());
-        args.putString("Quota",quota);
+        args.putInt("Quota",quota);
         args.putInt("vId",vId);
         args.putInt("uId",uId);
         fragment.setArguments(args);
         return fragment;
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,7 +93,7 @@ public class VideoDetailragment extends Fragment {
             VideoAuthor = getArguments().getString("VideoAuthor");
             VideoIntro = getArguments().getString("VideoIntro");
             VideoPrice = getArguments().getInt("VideoPrice");
-            quota = getArguments().getString("Quota");
+            quota = getArguments().getInt("Quota");
             vId  =getArguments().getInt("vId");
             uId = getArguments().getInt("uId");
         }
@@ -105,14 +109,16 @@ public class VideoDetailragment extends Fragment {
         videoWatch = view.findViewById(R.id.video_watch);
         videoContent = view.findViewById(R.id.video_intro);
         buyVideo = view.findViewById(R.id.video_buy);
+        buyVideo.setClickable(false);
 
         videoTile.setText(VideoTitle);
         videoCate.setText(VideoCategories);
         videoContent.setText(VideoIntro);
-        videoWatch.setText(String.valueOf(VideoWatch));
+        videoWatch.setText("阅读量："+String.valueOf(VideoWatch));
         videoAuthor.setText(VideoAuthor);
-        if (quota.equals("0")){
+        if (quota==0){
             buyVideo.setText("花费"+VideoPrice+"积分观看视频");
+//            buyVideo.setClickable(true);
         }else {
             buyVideo.setText("剩余"+quota+"次观看次数");
             buyVideo.setClickable(false);
@@ -123,11 +129,14 @@ public class VideoDetailragment extends Fragment {
                 SharedPreferences sharedPreferences=getActivity().getSharedPreferences("LoginState",Context.MODE_PRIVATE);
                 String username = sharedPreferences.getString("name",null);
                 String userType = sharedPreferences.getString("type",null);
-                int uIdint=sharedPreferences.getInt("uId",0);
-                if (username!=null){
+                uIdint=sharedPreferences.getInt("uId",0);
+                if (username!=null&&quota==0){
                     BuyVideo(uIdint,vId);
-                }else {
+                    mListener.PlayAble(true);
+                }else if (username==null){
                     Toast.makeText(getContext(),"请先登录",Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getActivity(),UserLoginActivity.class);
+                    startActivityForResult(intent,0);
                 }
 
             }
@@ -136,6 +145,14 @@ public class VideoDetailragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data!=null) {
+            int UID = data.getIntExtra("UID", 0);
+            uIdint = UID;
+        }
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -172,6 +189,7 @@ public class VideoDetailragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
+        void PlayAble(boolean playable);
         void onFragmentInteraction(Uri uri);
     }
 

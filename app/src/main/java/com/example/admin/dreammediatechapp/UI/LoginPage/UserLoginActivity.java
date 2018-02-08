@@ -102,7 +102,14 @@ public class UserLoginActivity extends AppCompatActivity{
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.sign_in_button:
-                    LoginAction(loginUrl,loginName.getText().toString(),loginPassword.getText().toString());
+                    if(loginName.getText().toString().equals("")){
+                            Toast.makeText(getApplicationContext(),"请输入用户名",Toast.LENGTH_LONG).show();
+                    }else if (loginPassword.getText().toString().equals("")){
+                              Toast.makeText(getApplicationContext(),"请输入密码",Toast.LENGTH_LONG).show();
+                    }else {
+                        LoginAction(loginUrl,loginName.getText().toString(),loginPassword.getText().toString());
+                    }
+
                     break;
                 case  R.id.register_button:
                     startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
@@ -161,7 +168,7 @@ public class UserLoginActivity extends AppCompatActivity{
                                 JsonElement je = new JsonParser().parse(result);
                                 Log.d(TAG,"获取返回码"+je.getAsJsonObject().get("status"));
                                 Log.d(TAG,"获取返回信息"+je.getAsJsonObject().get("data"));
-                                 User user= UserJsonData(je.getAsJsonObject().get("data"));
+                                User user= UserJsonData(je.getAsJsonObject().get("data"));
 
                                 showResponse(je.getAsJsonObject().get("status").toString(),user);
                             }
@@ -188,6 +195,10 @@ public class UserLoginActivity extends AppCompatActivity{
                     case "200":
                         Toast.makeText(getApplicationContext(),"登录成功",Toast.LENGTH_LONG).show();
                         CreateLoginState(user);
+                        int UID=user.getuId();
+                        Intent data = new Intent();
+                        data.putExtra("UID",UID);
+                        setResult(0,data);
                         finish();
                         break;
                     case "500":
@@ -208,7 +219,10 @@ public class UserLoginActivity extends AppCompatActivity{
     private User UserJsonData(JsonElement data){
         Gson gson = new Gson();
         User user = gson.fromJson(data,User.class);
-        Log.d(TAG,"获取返回信息"+user.getuNickName());
+        if (user!=null){
+            Log.d(TAG,"获取返回信息"+user.getuNickName());
+        }
+
         return user;
     }
 

@@ -38,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.dreammediatechapp.Adapter.ContentPagerAdapter;
+import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.Entities.VideoijkBean;
@@ -74,7 +75,8 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
     private List<VideoijkBean> list;
     private PowerManager.WakeLock wakeLock;
     View rootView;
-    private String url,url2,url3,url4,quota="0";
+    private String url,url2,url3,url4;
+    private int quota=0;
     private TabLayout tab;
     private ViewPager viewPager;
     private List<String> tabIndicators;
@@ -99,7 +101,6 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
         GetVideo();
         CheckLoginState();
         CheckUser(uId,vId);
-        PlayVideo(uId,vId);
 
 
 
@@ -148,12 +149,13 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
 
                 if (uId==0){
                     Toast.makeText(getApplicationContext(),"请先登录",Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(getApplicationContext(),UserLoginActivity.class));
+                    Intent intent = new Intent(getApplicationContext(),UserLoginActivity.class);
+                    startActivityForResult(intent,0);
                 }
                 else if (playAble){
-
                     player.forbidTouch(false).hideCenterPlayer(false).startPlay();
                     floatingActionButton.setVisibility(View.GONE);
+                    PlayVideo(uId,vId);
 
                 }
                 else {
@@ -176,6 +178,15 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data!=null) {
+            int UID = data.getIntExtra("UID", 0);
+            uId = UID;
+        }
     }
 
     @Override
@@ -244,6 +255,11 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public  void PlayAble(boolean playAble){
+        this.playAble = playAble;
     }
 
     private void GetVideo(){
@@ -388,7 +404,6 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
         int uIdint=sharedPreferences.getInt("uId",0);
         if (username!=null){
             uId=uIdint;
-
         }
     }
     private class ContentPagerAdapter extends FragmentPagerAdapter {
@@ -434,9 +449,9 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
                             JsonElement je = new JsonParser().parse(result);
                             Log.d("HDA","获取返回码"+je.getAsJsonObject().get("status"));
                             Log.d("HDA","获取返回信息"+je.getAsJsonObject().get("data"));
-                            quota = je.getAsJsonObject().get("data").toString();
+                            quota = Integer.parseInt(je.getAsJsonObject().get("data").toString());
                             Log.d("HDA","获取返回信息"+quota);
-                            if (!quota.equals("0")){
+                            if (quota!=0){
                                 playAble=true;
                             }
 
@@ -464,7 +479,7 @@ public class HPlayerActivity extends AppCompatActivity implements VideoCommentFr
             @Override
             public void run() {
                 try{
-                    String sendUrl2="http://192.168.1.102:8080/Dream/mobileVideoController/userStartVideo.action?vid="+vid+"&uid="+uid;
+                    String sendUrl2="http://119.29.114.73/Dream/mobileVideoController/userStartVideo.action?vid="+vid+"&uid="+uid;
 
                     Log.d("HPA",sendUrl2);
                     OkHttpClient okHttpClient = new OkHttpClient();

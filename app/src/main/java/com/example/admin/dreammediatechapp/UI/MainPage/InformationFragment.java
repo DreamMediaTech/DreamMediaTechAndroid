@@ -51,6 +51,7 @@ public class InformationFragment extends Fragment {
     private RecyclerView mRecyclerView,mRecyclerView2;
     private CircleImageView user_image;
     private TextView user_name,userChar;
+    private int uId=0;
     SharedPreferences sp;
 
     public static InformationFragment newInstance() {
@@ -81,7 +82,7 @@ public class InformationFragment extends Fragment {
 
     @Override
     public  void onStart() {
-
+        CheckLoginState();
         super.onStart();
 
     }
@@ -171,28 +172,54 @@ public class InformationFragment extends Fragment {
         mRecyclerView.addItemDecoration(new SimpleDividerDecoration(getActivity()));
         InformationAdapter informationAdapter = new InformationAdapter(mRecyclerView);
         mRecyclerView.setAdapter(informationAdapter);
+        Bundle bundle = new Bundle();
 
         informationAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
                 switch (position){
+
                     case 0:
-                        startActivity(new Intent(getContext(), UserInfoActivity.class));
+                        if (uId!=0){
+                            startActivity(new Intent(getContext(), UserInfoActivity.class));
+                        }
+                        else {
+                            Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_LONG).show();
+                        }
                         break;
                     case 1:
-                        startActivity(new Intent(getContext(), PointActivity.class));
+
+                        if (uId!=0){
+                            startActivity(new Intent(getContext(), PointActivity.class));
+                        }
+                        else {
+                            Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_LONG).show();
+                        }
                         break;
                     case 3:
-                        startActivity(new Intent(getContext(), MyShareActivity.class ));
+                        if (uId!=0){
+                            startActivity(new Intent(getContext(), MyShareActivity.class ));
+                        }
+                        else {
+                            Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_LONG).show();
+                        }
                         break;
                     case 4:
-                        startActivity(new Intent(getContext(), MyVideoActivity.class));
+                        if (uId!=0){
+                            startActivity(new Intent(getContext(), MyVideoActivity.class));
+                        }
+                        else {
+                            Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_LONG).show();
+                        }
                         break;
                     case 5:
                         startActivity(new Intent(getContext(), SettingsActivity.class));
                         break;
                     case 6:
                         startActivity(new Intent(getContext(), CustomerServiceActivity.class));
+                        break;
+                    default:
+                            break;
                 }
             }
         });
@@ -219,11 +246,10 @@ public class InformationFragment extends Fragment {
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("LoginState",Context.MODE_PRIVATE);
         String username = sharedPreferences.getString("name",null);
         String userType = sharedPreferences.getString("type",null);
+        uId = sharedPreferences.getInt("uId",0);
         if (username!=null){
             user_name.setText(username);
             userChar.setText(userType);
-
-
         }
     }
 }

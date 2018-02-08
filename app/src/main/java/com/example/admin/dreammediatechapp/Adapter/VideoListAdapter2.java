@@ -41,7 +41,7 @@ public class VideoListAdapter2 extends ListBaseAdapter<Video> {
         video_title.setText(video.getvTitle());
         video_owner.setText(video.getAuthor().getuNickName());
         video_categories.setText(video.getFirstType().getVtName());
-        video_watch.setText(String.valueOf(video.getvNum()));
+        video_watch.setText("播放量  "+String.valueOf(video.getvNum()));
 
 
     }

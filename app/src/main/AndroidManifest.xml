@@ -78,6 +78,7 @@
 
         <activity android:name=".UI.CategoriesPage.CategoriesDetailActivity" />
         <activity android:name=".UI.DreamMediaPage.ArticleDetailActivity"></activity>
+        <activity android:name=".UI.MainPage.WebViewActivity"></activity>
     </application>
 
 </manifest>

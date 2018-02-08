@@ -35,7 +35,7 @@ public class ArticleListAdapter extends ListBaseAdapter<Article>{
         article_cover.setImageResource(R.mipmap.banner2);
         article_title.setText(article.getaTitle());
         article_time.setText(article.getaTime());
-        article_read.setText(String.valueOf(article.getClicks()));
+        article_read.setText("阅读量："+String.valueOf(article.getClicks()));
 
     }
 }

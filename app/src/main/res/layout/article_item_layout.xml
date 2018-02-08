@@ -48,6 +48,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="这是你不得不看的十句话"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
                 android:textSize="@dimen/video_list_title" />
 
             <TextView
