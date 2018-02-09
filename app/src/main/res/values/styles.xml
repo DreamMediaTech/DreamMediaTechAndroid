@@ -30,4 +30,16 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="customBackground" parent="@android:style/Theme.Holo.Light">
+        <item name="android:windowBackground">@drawable/start_bg</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style
+        name="Appwelcome"
+        parent="android:Theme.Translucent.NoTitleBar.Fullscreen">
+        >
+        <item name="android:windowBackground">@drawable/start_bg</item>
+    </style>
+
 </resources>

@@ -39,12 +39,9 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".UI.MainPage.MainActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:label="@string/app_name"
+            >
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".UI.LoginPage.RegisterActivity" />
         <activity android:name=".UI.LoginPage.PasswordActivity" />
@@ -77,8 +74,17 @@
             android:value="6686812c0bd0b603d0cab38f" />
 
         <activity android:name=".UI.CategoriesPage.CategoriesDetailActivity" />
-        <activity android:name=".UI.DreamMediaPage.ArticleDetailActivity"></activity>
-        <activity android:name=".UI.MainPage.WebViewActivity"></activity>
+        <activity android:name=".UI.DreamMediaPage.ArticleDetailActivity" />
+        <activity android:name=".UI.MainPage.WebViewActivity" />
+        <activity android:name=".UI.MainPage.WelcomeActivity"
+
+            android:theme="@style/Appwelcome">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

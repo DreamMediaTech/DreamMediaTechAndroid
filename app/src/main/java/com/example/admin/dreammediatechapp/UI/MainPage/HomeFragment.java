@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
@@ -36,6 +40,7 @@ import com.example.admin.dreammediatechapp.Adapter.HomeShortCutAdapter;
 import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
 import com.example.admin.dreammediatechapp.Adapter.VideoAdapter;
 import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter;
+import com.example.admin.dreammediatechapp.Entities.Display;
 import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
@@ -46,10 +51,20 @@ import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
 import com.example.admin.dreammediatechapp.UI.MediaPage.PlayerActivity;
 import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,11 +79,10 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
+    private String TAG="HF";
     private RollPagerView mRollPageViewPager;
-
     private NestedScrollView nestedScrollView;
-   private List<Video> videoList = new ArrayList<>();
+    private List<Video> videoList = new ArrayList<>();
     private RecyclerView shortcutRecyclerView;
     private LRecyclerView mRecyclerView;
     private TabLayout mTab;
@@ -76,8 +90,7 @@ public class HomeFragment extends Fragment {
     private List<String> tabIndicators;
     private List<Fragment> tabFragments;
     private ContentPagerAdapter contentAdapter;
-    private Fragment one,two,three;
-
+    private List<Display> bannerList= new ArrayList<>();
     private ViewFlipper viewFlipper;
     private List hitList;
     private int count;
@@ -111,6 +124,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GetBannerList();
     }
 
     @Override
@@ -118,7 +132,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_home, container, false);
         mRollPageViewPager=view.findViewById(R.id.adRoller);
-        RollPager();
+
 
         nestedScrollView= view.findViewById(R.id.home_recyclerview);
         nestedScrollView.setFocusable(true);
@@ -239,25 +253,28 @@ public class HomeFragment extends Fragment {
         mRollPageViewPager.setHintView(new ColorPointHintView(getContext(), R.color.black,R.color.colorPrimary));
         mRollPageViewPager.setHintAlpha(1);
 
-
     }
     private class TestNormalAdapter extends StaticPagerAdapter {
-        private String[] img={
-                "http://f.hiphotos.baidu.com/image/pic/item/503d269759ee3d6db032f61b48166d224e4ade6e.jpg",
-                "http://a.hiphotos.baidu.com/image/pic/item/500fd9f9d72a6059f550a1832334349b023bbae3.jpg",
-                "http://h.hiphotos.baidu.com/image/pic/item/1ad5ad6eddc451da9eed97a0bdfd5266d0163265.jpg"
-        };
+//        private String[] img={
+//                "http://f.hiphotos.baidu.com/image/pic/item/503d269759ee3d6db032f61b48166d224e4ade6e.jpg",
+//                "http://a.hiphotos.baidu.com/image/pic/item/500fd9f9d72a6059f550a1832334349b023bbae3.jpg",
+//                "http://h.hiphotos.baidu.com/image/pic/item/1ad5ad6eddc451da9eed97a0bdfd5266d0163265.jpg"
+//        };
 
         @Override
-        public View getView(ViewGroup container, int position) {
+        public View getView(ViewGroup container, final int position) {
             ImageView imageView=new ImageView(container.getContext());
-            Glide.with(getContext()).load(img[position]).into(imageView);
+            Glide.with(getContext()).load(bannerList.get(position).getImageAddress()).into(imageView);
 
 //            imageView.setImageResource(img[position]);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Bundle url = new Bundle();
+                    url.putString("bannerUrl",bannerList.get(position).getLinkAddress());
+                    Log.d(TAG,bannerList.get(position).getLinkAddress());
                     Intent intent = new Intent(getContext(), WebViewActivity.class);
+                    intent.putExtras(url);
                     startActivity(intent);
 
                 }
@@ -269,7 +286,7 @@ public class HomeFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return img.length;
+            return bannerList.size();
         }
     }
     private class ContentPagerAdapter extends FragmentPagerAdapter {
@@ -286,9 +303,66 @@ public class HomeFragment extends Fragment {
             return tabIndicators.size();
         }
 
-
-
-
     }
+    private void GetBannerList(){
+        final Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    String sendUrl ="http://119.29.114.73/Dream/displayController/getAllDisplayToApp.action";
+                    Log.d(TAG,sendUrl);
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    final Request request = new Request.Builder().url(sendUrl).build();
+                    Call call = okHttpClient.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            String result = response.body().string();
+                            JsonElement je = new JsonParser().parse(result);
+                            Log.d(TAG,"获取返回码"+je.getAsJsonObject().get("status"));
+                            Log.d(TAG,"获取返回信息"+je.getAsJsonObject().get("data"));
+                            //JsonData(je.getAsJsonObject().get("data"));
+                            //videoList=JsonData(je.getAsJsonObject().get("data"));
+                            //TOTAL_COUNTER = videoList.size();
+                            // Log.d(TAG,"获取返回信息"+String.valueOf(TOTAL_COUNTER));
+                            bannerList = JsonData(je.getAsJsonObject().get("data"));
+                            UIThread(bannerList);
+
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(){
+            public void run(){
+                new Handler(Looper.getMainLooper()).post(runnable);
+            }
+        }.start();
+    }
+    private List<Display> JsonData(JsonElement data){
+        Gson gson = new Gson();
+        List<Display> bannerList = gson.fromJson(data,new TypeToken<List<Display>>(){}.getType());
+        for (Display display:bannerList){
+            Log.d(TAG,display.getImageAddress());
+        }
+        return bannerList ;
+    }
+    private void UIThread(final List<Display> List) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                RollPager();
+            }
+        });
+    }
+
 
 }

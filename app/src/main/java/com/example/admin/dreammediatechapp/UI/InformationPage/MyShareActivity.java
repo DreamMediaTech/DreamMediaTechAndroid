@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin.dreammediatechapp.Entities.Article;
 import com.example.admin.dreammediatechapp.R;
@@ -57,18 +58,18 @@ public class MyShareActivity extends AppCompatActivity {
     }
     private class ArticleHolder extends RecyclerView.ViewHolder{
 
-        private Article article;
+
         // private ConstraintLayout item_layout;
         private ImageView article_cover;
         private TextView article_title,article_time;
 
 
         public ArticleHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.article_item_layout,parent,false));
+            super(inflater.inflate(R.layout.article_list_layout,parent,false));
 
-            article_cover = itemView.findViewById(R.id.article_cover);
-            article_time = itemView.findViewById(R.id.article_time);
-            article_title = itemView.findViewById(R.id.article_title);
+            article_cover = itemView.findViewById(R.id.list_article_cover);
+            article_time = itemView.findViewById(R.id.list_article_time);
+            article_title = itemView.findViewById(R.id.list_article_title);
         }
 
     }
@@ -84,7 +85,6 @@ public class MyShareActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ArticleHolder holder, int i) {
             Article article=articleList.get(i);
-            holder.article=article;
             holder.article_cover.setImageResource(R.mipmap.banner2);
             holder.article_title.setText(article.getaTitle());
             holder.article_time.setText(article.getaTime());

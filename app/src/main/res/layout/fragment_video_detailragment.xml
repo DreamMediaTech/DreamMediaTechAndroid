@@ -61,7 +61,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:id="@+id/video_buy"
-                   android:padding="5dp"
+                   android:padding="10dp"
 
                    android:elevation="@dimen/dp_10"
                    android:text=""/>
@@ -85,10 +85,10 @@
                     android:layout_weight="1"
                     android:textSize="@dimen/video_list_title"/>
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:id="@+id/share_button"
-                    android:src="@drawable/alivc_refresh_green"
+                    android:src="@drawable/share_icon"
                     android:layout_gravity="center"
                     android:layout_marginLeft="100dp"
                     />

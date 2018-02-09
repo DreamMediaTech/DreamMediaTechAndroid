@@ -2,6 +2,7 @@ package com.example.admin.dreammediatechapp.UI.MainPage;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -26,15 +27,17 @@ public class WebViewActivity extends AppCompatActivity {
 
         }
 
-        URL ="http://119.29.114.73/Dream/mobileArticleController/getArticleToApp.action?aid="+aId;
-        String url="https://www.baidu.com";
+        Bundle bundle = getIntent().getExtras();
+        String url = bundle.getString("bannerUrl");
+        Log.d("HF",url);
+
         webView = findViewById(R.id.article_webview);
         webView.loadUrl(url);
         WebSettings webSettings = webView.getSettings();
         /**在App内部打开页面  **/
         webView.setWebViewClient(new WebViewClient());
         //网页适配手机屏幕，以显示完全
-        webSettings.setUseWideViewPort(true);
+        //webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 

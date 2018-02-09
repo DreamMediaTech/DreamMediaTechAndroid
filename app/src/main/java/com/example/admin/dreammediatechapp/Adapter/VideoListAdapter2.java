@@ -21,7 +21,12 @@ public class VideoListAdapter2 extends ListBaseAdapter<Video> {
         super(context);
 
     }
-    int cover[]={R.drawable.video_cover1,R.drawable.video_cover2,R.drawable.video_cover3,R.drawable.video_cover4,R.drawable.video_cover5,R.drawable.video_cover6};
+    int cover[]={R.drawable.video_cover1,R.drawable.video_cover2,R.drawable.video_cover3,R.drawable.video_cover4,R.drawable.video_cover5,R.drawable.video_cover6,
+            R.drawable.video_cover1,R.drawable.video_cover2,R.drawable.video_cover3,R.drawable.video_cover4,R.drawable.video_cover5,R.drawable.video_cover6,
+            R.drawable.video_cover1,R.drawable.video_cover2,R.drawable.video_cover3,R.drawable.video_cover4,R.drawable.video_cover5,R.drawable.video_cover6,
+            R.drawable.video_cover1,R.drawable.video_cover2,R.drawable.video_cover3,R.drawable.video_cover4,R.drawable.video_cover5,R.drawable.video_cover6,
+            R.drawable.video_cover1,R.drawable.video_cover2,R.drawable.video_cover3,R.drawable.video_cover4,R.drawable.video_cover5,R.drawable.video_cover6,
+            R.drawable.video_cover1,R.drawable.video_cover2,R.drawable.video_cover3,R.drawable.video_cover4,R.drawable.video_cover5,R.drawable.video_cover6};
     @Override
     public int getLayoutId() {
         return R.layout.video_list_layout;

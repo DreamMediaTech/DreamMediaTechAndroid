@@ -117,7 +117,7 @@ public class PointActivity extends AppCompatActivity {
                             // JsonData(je.getAsJsonObject().get("data"));
                             //videoList=JsonData(je.getAsJsonObject().get("data"));
                             member=JsonData(je.getAsJsonObject().get("data"));
-                          //  showResponse(member);
+                            showResponse(member);
 
                         }
                     });
@@ -142,10 +142,13 @@ public class PointActivity extends AppCompatActivity {
         return member ;
     }
 
-    private void showResponse(final User user){
+    private void showResponse(final Member member){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                purchase_point.setText(String.valueOf(member.getConsumptionIntegral()));
+                share_point.setText(String.valueOf(member.getSharingIntegral()));
+                rewar_point.setText(String.valueOf(member.getBonusIntegral()));
             }
         });
 

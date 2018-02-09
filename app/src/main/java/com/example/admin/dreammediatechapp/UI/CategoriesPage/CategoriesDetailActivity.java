@@ -71,8 +71,6 @@ public class CategoriesDetailActivity extends AppCompatActivity{
 
     private int vtId ;
 
-    private  Bundle bundle = new Bundle();
-
 
     private WeakHandler mHandler = new WeakHandler() {
         @Override
@@ -118,22 +116,17 @@ public class CategoriesDetailActivity extends AppCompatActivity{
         setContentView(R.layout.activity_categories_detail);
         Bundle bundle = this.getIntent().getExtras();
 
-        String vtName= bundle.getString("vtName");
-        vtId=bundle.getInt("vtId");
-
+        String vtName = bundle.getString("vtName");
+        vtId = bundle.getInt("vtId");
 
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar!=null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(vtName);
 
         }
-        init();
-
-    }
-    public void init() {
         mRecyclerView = (LRecyclerView) findViewById(R.id.categories_list);
         videoListAdapter2 = new VideoListAdapter2(this);
         mLRecyclerViewAdapter = new LRecyclerViewAdapter(videoListAdapter2);
@@ -159,7 +152,7 @@ public class CategoriesDetailActivity extends AppCompatActivity{
         //是否禁用自动加载更多功能,false为禁用, 默认开启自动加载更多功能
         mRecyclerView.setLoadMoreEnabled(true);
         //设置底部加载文字提示
-        mRecyclerView.setFooterViewHint("拼命加载中","我是有底线的","网络不给力啊，点击再试一次吧");
+        mRecyclerView.setFooterViewHint("拼命加载中", "我是有底线的", "网络不给力啊，点击再试一次吧");
         mRecyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -201,8 +194,8 @@ public class CategoriesDetailActivity extends AppCompatActivity{
             public void onItemClick(View view, int position) {
                 if (videoListAdapter2.getDataList().size() > position) {
                     Intent intent = new Intent(getApplicationContext(), HPlayerActivity.class);
-                    Bundle b=new Bundle();
-                    b.putInt("vId",videoList.get(position).getvId());
+                    Bundle b = new Bundle();
+                    b.putInt("vId", videoList.get(position).getvId());
                     intent.putExtras(b);
 
                     startActivity(intent);
@@ -219,6 +212,7 @@ public class CategoriesDetailActivity extends AppCompatActivity{
 
             }
         });
+
 
     }
 
