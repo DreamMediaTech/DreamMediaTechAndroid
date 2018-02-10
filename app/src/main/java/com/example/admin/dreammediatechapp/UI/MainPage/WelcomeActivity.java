@@ -16,6 +16,7 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         timer.start();
+        this.finish();
     }
     private CountDownTimer timer = new CountDownTimer(1000,1000) {
         @Override

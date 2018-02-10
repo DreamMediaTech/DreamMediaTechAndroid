@@ -37,9 +37,10 @@
 
     <style
         name="Appwelcome"
-        parent="android:Theme.Translucent.NoTitleBar.Fullscreen">
+        parent="android:Theme.NoTitleBar.Fullscreen">
         >
         <item name="android:windowBackground">@drawable/start_bg</item>
+
     </style>
 
 </resources>
