@@ -6,8 +6,9 @@
 
     <com.github.jdsjlzx.recyclerview.LRecyclerView
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:id="@+id/recommendList"
+        android:layout_marginTop="@dimen/dp_10"
         android:nestedScrollingEnabled="false">
 
     </com.github.jdsjlzx.recyclerview.LRecyclerView>

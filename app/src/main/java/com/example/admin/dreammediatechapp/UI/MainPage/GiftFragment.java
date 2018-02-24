@@ -100,7 +100,7 @@ public class GiftFragment extends Fragment {
 //            giftList.add(integralPackage);
 //
 //        }
-        GetGiftList();
+
     }
 
     @Override
@@ -108,7 +108,7 @@ public class GiftFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_gift, container, false);
         mRecyclerView = (RecyclerView)view.findViewById(R.id.gift_list);
-
+        GetGiftList();
         // Inflate the layout for this fragment
         return view;
     }

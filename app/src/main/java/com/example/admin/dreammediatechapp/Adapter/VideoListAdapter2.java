@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.admin.dreammediatechapp.Entities.Comment;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.R;
@@ -42,7 +43,9 @@ public class VideoListAdapter2 extends ListBaseAdapter<Video> {
         TextView video_categories=holder.getView(R.id.video_list_categories);
         TextView video_watch=holder.getView(R.id.video_list_watch);
 
-        video_cover.setImageResource(cover[position]);
+
+        Glide.with(mContext).load(video.getvTopAddress()).into(video_cover);
+       // video_cover.setImageResource(cover[position]);
         video_title.setText(video.getvTitle());
         video_owner.setText(video.getAuthor().getuNickName());
         video_categories.setText(video.getFirstType().getVtName());

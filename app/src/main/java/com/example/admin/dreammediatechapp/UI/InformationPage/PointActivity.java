@@ -1,6 +1,7 @@
 package com.example.admin.dreammediatechapp.UI.InformationPage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
@@ -81,6 +82,7 @@ public class PointActivity extends AppCompatActivity {
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.point_cash:
+                    startActivity(new Intent(getApplicationContext(),CashActivity.class));
                 break;
                 case  R.id.point_change:
                     break;

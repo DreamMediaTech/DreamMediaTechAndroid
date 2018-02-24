@@ -16,17 +16,20 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         timer.start();
-        this.finish();
+        startActivity(new Intent(getApplication(),MainActivity.class));
+
     }
-    private CountDownTimer timer = new CountDownTimer(1000,1000) {
+    private CountDownTimer timer = new CountDownTimer(3000,3000) {
         @Override
         public void onTick(long l) {
 
         }
 
+
         @Override
         public void onFinish() {
-            startActivity(new Intent(getApplication(),MainActivity.class));
+
+            finish();
         }
     };
 }

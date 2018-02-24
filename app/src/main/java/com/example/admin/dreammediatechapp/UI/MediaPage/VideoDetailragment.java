@@ -214,8 +214,10 @@ public class VideoDetailragment extends Fragment {
                         @Override
                         public void onResponse(Response response) throws IOException {
                             String result = response.body().string();
-                            Log.d("VDF",result);
-                            BuyState(result);
+                            JsonElement je = new JsonParser().parse(result);
+                            Log.d("VDF","44"+je.getAsJsonObject().get("status"));
+                            int status = Integer.parseInt(je.getAsJsonObject().get("status").toString());
+                            BuyState(status);
 
                         }
                     });
@@ -231,11 +233,11 @@ public class VideoDetailragment extends Fragment {
         }.start();
     }
 
-    private  void BuyState(final String result){
+    private  void BuyState(final int result){
        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (result.equals("5")){
+                if (result==5){
                     Toast.makeText(getContext(),"购买失败",Toast.LENGTH_LONG).show();
                 }else
                 {

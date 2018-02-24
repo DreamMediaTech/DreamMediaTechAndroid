@@ -77,8 +77,9 @@ public class RegisterActivity extends AppCompatActivity {
                     SMSSDK.getInstance().checkSmsCodeAsyn(phoneNum.getText().toString(), code.getText().toString(), new SmscheckListener() {
                         @Override
                         public void checkCodeSuccess(String s) {
-                            String RegisterUrl="http://192.168.1.107:8080/Dream/mobileUserController/registerAppNewUser.action";
+                            String RegisterUrl="http://119.29.114.73/Dream/mobileUserController/registerAppNewUser.action";
                             RegisterAction(RegisterUrl,phoneNum.getText().toString(),password.getText().toString());
+                            Toast.makeText(getApplication(),"请稍候",Toast.LENGTH_SHORT).show();
                         }
 
                         @Override

@@ -210,9 +210,9 @@ public class CategoriesFragment extends Fragment {
     private List<VideoType> JsonData(JsonElement data){
         Gson gson = new Gson();
         List<VideoType> videoTypeList = gson.fromJson(data,new TypeToken<List<VideoType>>(){}.getType());
-        for (VideoType videoType:videoTypeList){
-            Log.d("Cate",videoType.getVtName());
-        }
+//        for (VideoType videoType:videoTypeList){
+//            Log.d("Cate",videoType.getVtName());
+//        }
         return videoTypeList ;
     }
 
@@ -241,7 +241,7 @@ public class CategoriesFragment extends Fragment {
                 tabIndicators = new ArrayList<>();
                 tabFragments = new ArrayList<>();
                 for (VideoType videoType:List){
-                    Log.d("Frage",videoType.getVtName());
+//                    Log.d("Frage",videoType.getVtName());
                     tabIndicators.add(videoType.getVtName());
                     List<VideoType> subList = videoType.getSubTypes();
                     for (VideoType videoType1:subList){

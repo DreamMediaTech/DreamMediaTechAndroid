@@ -285,7 +285,7 @@ public class HomeRecommendFragment extends Fragment {
             @Override
             public void run() {
                 try{
-                    String sendUrl = "http://119.29.114.73/Dream/mobileVideoController/getAllVideoByType.action?type=6&start="+mCurrentCounter+"&num=10";
+                    String sendUrl = "http://119.29.114.73/Dream/mobileVideoController/getAllVideoByType.action?type=6&start="+mCurrentCounter+"&num=5";
                     Log.d("CDA",sendUrl);
                     OkHttpClient okHttpClient = new OkHttpClient();
                     final Request request = new Request.Builder().url(sendUrl).build();

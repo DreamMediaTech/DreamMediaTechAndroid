@@ -124,7 +124,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GetBannerList();
+
     }
 
     @Override
@@ -168,6 +168,7 @@ public class HomeFragment extends Fragment {
             }
         }
 
+        GetBannerList();
 
         viewFlipper = view.findViewById(R.id.hit_flipper);
         hitList = new ArrayList();

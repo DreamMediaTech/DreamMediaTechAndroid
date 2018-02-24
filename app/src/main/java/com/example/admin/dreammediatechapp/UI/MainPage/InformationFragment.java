@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
 import com.example.admin.dreammediatechapp.Adapter.InformationAdapter;
 import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
@@ -50,7 +51,7 @@ public class InformationFragment extends Fragment {
 
     private RecyclerView mRecyclerView,mRecyclerView2;
     private CircleImageView user_image;
-    private TextView user_name,userChar;
+    private TextView user_name,userChar,purchase_num;
     private int uId=0;
     SharedPreferences sp;
 
@@ -102,6 +103,7 @@ public class InformationFragment extends Fragment {
         user_image = view.findViewById(R.id.user_image);
         user_name = view.findViewById(R.id.user_name);
         userChar=view.findViewById(R.id.user_char);
+        purchase_num = view.findViewById(R.id.purchase_num);
         sp=getActivity().getSharedPreferences("LoginState",Context.MODE_PRIVATE);
 
 
@@ -247,9 +249,13 @@ public class InformationFragment extends Fragment {
         String username = sharedPreferences.getString("name",null);
         String userType = sharedPreferences.getString("type",null);
         uId = sharedPreferences.getInt("uId",0);
+        String address = sharedPreferences.getString("uIcon",null);
+        Float purchase = sharedPreferences.getFloat("purchasePoint",0);
         if (username!=null){
             user_name.setText(username);
             userChar.setText(userType);
+            Glide.with(getActivity()).load(address).into(user_image);
+            purchase_num.setText("消费积分  "+String.valueOf(purchase));
         }
     }
 }

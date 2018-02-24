@@ -142,6 +142,8 @@ public class UserLoginActivity extends AppCompatActivity{
         editor.putString("name",user.getuNickName());
         editor.putString("type",user.getuType());
         editor.putInt("uId",user.getuId());
+        editor.putString("uIcon",user.getuImageAddress());
+        editor.putFloat("purchasePoint",user.getMemberInformation().getConsumptionIntegral());
         editor.commit();
     }
 
