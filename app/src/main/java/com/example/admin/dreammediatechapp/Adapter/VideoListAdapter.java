@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.R;
 
@@ -35,8 +36,8 @@ public class VideoListAdapter extends AbsRecyclerViewAdapter {
         if (holder instanceof ItemViewHolder) {
             Video video = videoList.get(position);
             ((ItemViewHolder) holder).mVideo=video;
-            ((ItemViewHolder) holder).video_cover.setImageResource(R.mipmap.banner2);
-            ((ItemViewHolder) holder).video_cover.setImageResource(R.mipmap.banner2);
+            Glide.with(getContext()).load(video.getvTopAddress()).into(((ItemViewHolder) holder).video_cover);
+            //((ItemViewHolder) holder).video_cover.setImageResource(R.mipmap.banner2);
             ((ItemViewHolder) holder).video_title.setText(video.getvTitle());
             ((ItemViewHolder) holder).video_owner.setText(video.getAuthor().getuName());
             ((ItemViewHolder) holder).video_categories.setText(video.getFirstType().getVtName());

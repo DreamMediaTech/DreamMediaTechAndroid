@@ -1,21 +1,21 @@
-package com.example.admin.dreammediatechapp.UI.CategoriesPage;
+package com.example.admin.dreammediatechapp.UI.HomePage;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
-import com.example.admin.dreammediatechapp.Adapter.SubCategoriesAdapter;
-import com.example.admin.dreammediatechapp.Entities.VideoType;
+import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter;
+import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.R;
+import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,30 +23,36 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SubCategoriesFragment.OnFragmentInteractionListener} interface
+ * {@link HomeRecommend2Fragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SubCategoriesFragment#newInstance} factory method to
+ * Use the {@link HomeRecommend2Fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SubCategoriesFragment extends Fragment {
+public class HomeRecommend2Fragment extends Fragment {
 
-    private List<VideoType> subTypeList = new ArrayList<>();
-    private RecyclerView subTypeRecyclerView ;
-    private String vtName;
+    private List<Video> videoList  = new ArrayList<>();
+    private RecyclerView recyclerView;
+
 
     private OnFragmentInteractionListener mListener;
 
-    public SubCategoriesFragment() {
+    public HomeRecommend2Fragment() {
         // Required empty public constructor
     }
 
-    public static SubCategoriesFragment newInstance(List<VideoType> llist,String vtName ) {
-        SubCategoriesFragment fragment = new SubCategoriesFragment();
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @return A new instance of fragment HomeRecommend2Fragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static HomeRecommend2Fragment newInstance(List<Video> List) {
+        HomeRecommend2Fragment fragment = new HomeRecommend2Fragment();
         Bundle args = new Bundle();
         ArrayList list = new ArrayList();
-        list.add(llist);
+        list.add(List);
         args.putParcelableArrayList("list",list);
-        args.putString("vtName",vtName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,42 +61,31 @@ public class SubCategoriesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
-           vtName= getArguments().getString("vtName");
             ArrayList list = getArguments().getParcelableArrayList("list");
-            subTypeList = (List<VideoType>)list.get(0);
-            for (VideoType videoType:subTypeList){
-                Log.d("Cate","Sub"+videoType.getVtName());
-                Log.d("Cate","Sub"+vtName);
-            }
+            videoList = (List<Video>)list.get(0);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_sub_categories, container, false);
-        subTypeRecyclerView =view.findViewById(R.id.sub_categories_recyclerView);
-        subTypeRecyclerView.setHasFixedSize(true);
-        subTypeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
-        SubCategoriesAdapter subCategoriesAdapter = new SubCategoriesAdapter(subTypeRecyclerView,subTypeList);
-        subTypeRecyclerView.setAdapter(subCategoriesAdapter);
-        subCategoriesAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
+        View view = inflater.inflate(R.layout.fragment_home_recommend2, container, false);
+        recyclerView = view.findViewById(R.id.recommendList2);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        VideoListAdapter videoListAdapter = new VideoListAdapter(recyclerView,videoList);
+        recyclerView.setAdapter(videoListAdapter);
+        videoListAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
-
-                        Intent intent= new Intent(getContext(),CategoriesDetailActivity.class);
-                        Bundle bundle= new Bundle();
-                        bundle.putString("vtName",subTypeList.get(position).getVtName());
-                        bundle.putInt("vtId",subTypeList.get(position).getVtId());
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-
-
-
+                Intent intent = new Intent(getContext(), HPlayerActivity.class);
+                Bundle b=new Bundle();
+                b.putInt("vId",videoList.get(position).getvId());
+                intent.putExtras(b);
+                startActivity(intent);
             }
         });
+        // Inflate the layout for this fragment
         return view;
     }
 

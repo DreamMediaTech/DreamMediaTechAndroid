@@ -1,18 +1,23 @@
 package com.example.admin.dreammediatechapp.UI.InformationPage;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -151,18 +156,27 @@ public class UserInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 //                startActivityForResult(intent,1);
-                File file = new File(Environment.getExternalStorageDirectory(),"icon.jpg");
-                try{
-                    if (file.exists()){
-                        file.delete();
-                    }file.createNewFile();
-                }catch (IOException e){
-                    e.printStackTrace();
+                if (Build.VERSION.SDK_INT>=23){
+                    int checkCallPhonePermission = ContextCompat.checkSelfPermission(UserInfoActivity.this, Manifest.permission.CAMERA);
+                    if(checkCallPhonePermission != PackageManager.PERMISSION_GRANTED){
+                        ActivityCompat.requestPermissions(UserInfoActivity.this,new String[]{Manifest.permission.CAMERA},222);
+                        return;
+                    }else {
+                        File file = new File(Environment.getExternalStorageDirectory(),"icon.jpg");
+                        try{
+                            if (file.exists()){
+                                file.delete();
+                            }file.createNewFile();
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                        imageUri = Uri.fromFile(file);
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                        startActivityForResult(intent, 1);
+                    }
                 }
-                 imageUri = Uri.fromFile(file);
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                startActivityForResult(intent, 1);
+
 
             }
         });

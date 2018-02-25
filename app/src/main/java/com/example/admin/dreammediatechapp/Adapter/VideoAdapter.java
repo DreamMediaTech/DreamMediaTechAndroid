@@ -1,24 +1,16 @@
 package com.example.admin.dreammediatechapp.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
-import com.example.admin.dreammediatechapp.UI.MainPage.HomeFragment;
-import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;

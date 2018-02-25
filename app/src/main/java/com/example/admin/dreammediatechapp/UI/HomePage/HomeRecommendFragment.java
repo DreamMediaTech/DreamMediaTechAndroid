@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter2;
 import com.example.admin.dreammediatechapp.Entities.Video;
+import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.UI.MainPage.CategoriesFragment;
 import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
@@ -77,6 +78,8 @@ public class HomeRecommendFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private int rcId;
+
     private WeakHandler mHandler = new WeakHandler() {
         @Override
         public void handleMessage(Message msg) {
@@ -98,17 +101,6 @@ public class HomeRecommendFragment extends Fragment {
                     mRecyclerView.refreshComplete(REQUEST_COUNT);
 
                     break;
-                case -3:
-                    mRecyclerView.refreshComplete(REQUEST_COUNT);
-                    notifyDataSetChanged();
-                    mRecyclerView.setOnNetWorkErrorListener(new OnNetWorkErrorListener() {
-                        @Override
-                        public void reload() {
-                            GetVideoList();
-                        }
-                    });
-
-                    break;
                 default:
                     break;
             }
@@ -125,9 +117,10 @@ public class HomeRecommendFragment extends Fragment {
      * @return A new instance of fragment HomeRecommendFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeRecommendFragment newInstance() {
+    public static HomeRecommendFragment newInstance(int rcId) {
         HomeRecommendFragment fragment = new HomeRecommendFragment();
         Bundle args = new Bundle();
+        args.putInt("rcId",rcId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -136,7 +129,8 @@ public class HomeRecommendFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            rcId = getArguments().getInt("rcId");
+            Log.d("CDA",String.valueOf(rcId));
         }
     }
 
@@ -285,7 +279,7 @@ public class HomeRecommendFragment extends Fragment {
             @Override
             public void run() {
                 try{
-                    String sendUrl = "http://119.29.114.73/Dream/mobileVideoController/getAllVideoByType.action?type=6&start="+mCurrentCounter+"&num=5";
+                    String sendUrl = "http://119.29.114.73/Dream/mobileVideoController/getVideoByRecommend.action?recid="+rcId;
                     Log.d("CDA",sendUrl);
                     OkHttpClient okHttpClient = new OkHttpClient();
                     final Request request = new Request.Builder().url(sendUrl).build();
@@ -303,10 +297,8 @@ public class HomeRecommendFragment extends Fragment {
                             JsonElement je = new JsonParser().parse(result);
                             Log.d("CDA","获取返回码"+je.getAsJsonObject().get("status"));
                             Log.d("CDA","获取返回信息"+je.getAsJsonObject().get("data"));
-                            Log.d("CDA","获取返回信息"+je.getAsJsonObject().get("count").getAsInt());
                             //JsonData(je.getAsJsonObject().get("data"));
                             videoList=JsonData(je.getAsJsonObject().get("data"));
-                            TOTAL_COUNTER=je.getAsJsonObject().get("count").getAsInt();
                             Message msg=new Message();
                             msg.what=-1;
 //                            msg.setData(bundle);

@@ -1,8 +1,9 @@
 package com.example.admin.dreammediatechapp.Entities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
 	private int uId;
 	private String uName;
 	private String uNickName;

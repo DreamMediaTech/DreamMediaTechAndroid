@@ -18,11 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.dreammediatechapp.Adapter.CommentAdapter;
-import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter;
 import com.example.admin.dreammediatechapp.Entities.Comment;
-import com.example.admin.dreammediatechapp.Entities.User;
-import com.example.admin.dreammediatechapp.Entities.Video;
-import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.Utils.NetworkUtils;
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;

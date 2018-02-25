@@ -1,30 +1,20 @@
 package com.example.admin.dreammediatechapp.UI.CategoriesPage;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter2;
 import com.example.admin.dreammediatechapp.Entities.Video;
-import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
-import com.example.admin.dreammediatechapp.UI.InformationPage.CustomerServiceActivity;
 import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.interfaces.OnItemLongClickListener;

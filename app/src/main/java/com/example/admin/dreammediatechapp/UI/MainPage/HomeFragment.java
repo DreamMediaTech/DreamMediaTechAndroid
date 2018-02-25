@@ -2,13 +2,11 @@ package com.example.admin.dreammediatechapp.UI.MainPage;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.constraint.ConstraintLayout;
+import android.support.annotation.UiThread;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,39 +15,28 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.webkit.WebView;
 import android.widget.ImageView;
 
-import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.example.admin.dreammediatechapp.Adapter.AbsRecyclerViewAdapter;
-import com.example.admin.dreammediatechapp.Adapter.ContentPagerAdapter;
 import com.example.admin.dreammediatechapp.Adapter.HomeShortCutAdapter;
-import com.example.admin.dreammediatechapp.Adapter.ShoppingAdapter;
-import com.example.admin.dreammediatechapp.Adapter.VideoAdapter;
-import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter;
 import com.example.admin.dreammediatechapp.Entities.Display;
-import com.example.admin.dreammediatechapp.Entities.User;
+import com.example.admin.dreammediatechapp.Entities.Recommend;
 import com.example.admin.dreammediatechapp.Entities.Video;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
-import com.example.admin.dreammediatechapp.UI.DreamMediaPage.ArticleDetailActivity;
+import com.example.admin.dreammediatechapp.UI.CategoriesPage.SubCategoriesFragment;
+import com.example.admin.dreammediatechapp.UI.HomePage.HomeRecommend2Fragment;
 import com.example.admin.dreammediatechapp.UI.HomePage.HomeRecommendFragment;
-import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
-import com.example.admin.dreammediatechapp.UI.MediaPage.PlayerActivity;
-import com.example.admin.dreammediatechapp.common.SimpleDividerDecoration;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -97,6 +84,7 @@ public class HomeFragment extends Fragment {
     private String title[]={
             "热门推荐","精品课程","考题模拟","直播课程","名师讲解","更多推荐"
     };
+    private  List<Recommend> recommendList = new ArrayList<>();
 
 
     private OnFragmentInteractionListener mListener;
@@ -142,31 +130,11 @@ public class HomeFragment extends Fragment {
         nestedScrollView.scrollTo(0,0);
 
         shortcutRecyclerView=(RecyclerView) view.findViewById(R.id.home_shortcut);
-        shortcutInit();
-
         mTab = view.findViewById(R.id.home_tab);
         mViewPager = view.findViewById(R.id.home_content);
+        shortcutInit();
+        getRecommend();
 
-        mTab.setTabMode(TabLayout.MODE_SCROLLABLE);
-        mTab.setTabTextColors(ContextCompat.getColor(getContext(), R.color.colorPrimary), ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        mTab.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        mTab.setupWithViewPager(mViewPager);
-        tabIndicators = new ArrayList<>();
-        tabFragments = new ArrayList<>();
-        for(int i=0;i<title.length;i++){
-            tabIndicators.add(title[i]);
-            tabFragments.add(new HomeRecommendFragment().newInstance());
-        }
-        contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
-        mViewPager.setAdapter(contentAdapter);
-
-
-        for(int i=0;i<tabIndicators.size();i++){
-            TabLayout.Tab itemTab = mTab.getTabAt(i);
-            if (itemTab!=null){
-                itemTab.setText(title[i]);
-            }
-        }
 
         GetBannerList();
 
@@ -365,5 +333,81 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void getRecommend(){
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                String getUrl="http://119.29.114.73/Dream/mobileVideoController/getRecommend.action";
+                OkHttpClient okHttpClient = new OkHttpClient();
+                final Request request = new Request.Builder().url(getUrl).build();
+                Call call = okHttpClient.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
 
+                    }
+
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                        String result = response.body().string();
+                        JsonElement je = new JsonParser().parse(result);
+                        Log.d(TAG,"获取返回码"+je.getAsJsonObject().get("status"));
+                        Log.d(TAG,"获取返回信息"+je.getAsJsonObject().get("data"));
+                        UiThread2(JsonRecommendData(je.getAsJsonObject().get("data")));
+                    }
+                });
+            }
+        };
+        new Thread(){
+            public void run(){
+                new Handler(Looper.getMainLooper()).post(runnable);
+            }
+        }.start();
+    }
+
+    private List<Recommend> JsonRecommendData(JsonElement data){
+        Gson gson = new Gson();
+        List<Recommend> recommendList = gson.fromJson(data,new TypeToken<List<Recommend>>(){}.getType());
+//        for (VideoType videoType:videoTypeList){
+//            Log.d("Cate",videoType.getVtName());
+//        }
+        return recommendList ;
+    }
+    private void UiThread2(final List<Recommend> recommendList){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                mTab.setTabMode(TabLayout.MODE_SCROLLABLE);
+                mTab.setTabTextColors(ContextCompat.getColor(getContext(), R.color.colorPrimary), ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                mTab.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                mTab.setupWithViewPager(mViewPager);
+                tabIndicators = new ArrayList<>();
+                tabFragments = new ArrayList<>();
+                for (int i = 0 ;i<recommendList.size();i++){
+                    tabIndicators.add(recommendList.get(i).getRecName());
+                    List<Video> videoList = recommendList.get(i).getVideos();
+                    tabFragments.add(new HomeRecommendFragment().newInstance(recommendList.get(i).getRecId()));
+                }
+//                for (Recommend recommend:recommendList){
+////                    Log.d("Frage",videoType.getVtName());
+//                    tabIndicators.add(recommend.getRecName());
+//                    List<Video> videoList = recommend.getVideos();
+//                    tabFragments.add(new HomeRecommendFragment().newInstance(videoList));
+//                }
+                contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
+                mViewPager.setAdapter(contentAdapter);
+                for(int i=0;i<tabIndicators.size();i++){
+                    TabLayout.Tab itemTab = mTab.getTabAt(i);
+                    if (itemTab!=null){
+                        itemTab.setText(recommendList.get(i).getRecName());
+                    }
+                }
+
+            }
+        });
+
+
+
+    }
 }

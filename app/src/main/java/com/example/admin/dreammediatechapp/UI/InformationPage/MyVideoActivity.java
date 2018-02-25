@@ -9,17 +9,13 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.admin.dreammediatechapp.Adapter.VideoAdapter;
 import com.example.admin.dreammediatechapp.Adapter.VideoListAdapter2;
-import com.example.admin.dreammediatechapp.Entities.User;
 import com.example.admin.dreammediatechapp.Entities.Video;
-import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
 import com.example.admin.dreammediatechapp.UI.MediaPage.HPlayerActivity;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;

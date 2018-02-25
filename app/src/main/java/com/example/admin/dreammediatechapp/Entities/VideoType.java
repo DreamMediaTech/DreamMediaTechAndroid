@@ -1,13 +1,17 @@
 package com.example.admin.dreammediatechapp.Entities;
 
+
+
 import java.io.Serializable;
 import java.util.List;
 
-public class VideoType  implements Serializable{
+public class VideoType  implements Serializable {
 	private int vtId;
 	private String vtName;
+	private String vtImage;
 	private int vtFather;
 	private List<VideoType> subTypes;
+
 	public int getVtId() {
 		return vtId;
 	}
@@ -26,6 +30,13 @@ public class VideoType  implements Serializable{
 	public void setVtFather(int vtFather) {
 		this.vtFather = vtFather;
 	}
+	
+	public String getVtImage() {
+		return vtImage;
+	}
+	public void setVtImage(String vtImage) {
+		this.vtImage = vtImage;
+	}
 	public List<VideoType> getSubTypes() {
 		return subTypes;
 	}
@@ -34,6 +45,5 @@ public class VideoType  implements Serializable{
 	}
 
 
-	
-	
+
 }

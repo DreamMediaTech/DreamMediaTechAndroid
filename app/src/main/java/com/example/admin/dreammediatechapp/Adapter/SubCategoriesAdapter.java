@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.admin.dreammediatechapp.Entities.VideoType;
 import com.example.admin.dreammediatechapp.R;
 
@@ -39,7 +40,8 @@ public class SubCategoriesAdapter extends AbsRecyclerViewAdapter {
     public void onBindViewHolder(ClickableViewHolder holder, int position) {
         if (holder instanceof SubCategoriesAdapter.ItemViewHolder) {
             SubCategoriesAdapter.ItemViewHolder itemViewHolder = (SubCategoriesAdapter.ItemViewHolder) holder;
-            itemViewHolder.imageView.setImageResource(R.mipmap.ic_launcher_round);
+            Glide.with(getContext()).load(subTypeList.get(position).getVtImage()).into(itemViewHolder.imageView);
+            //itemViewHolder.imageView.setImageResource(R.mipmap.ic_launcher_round);
             itemViewHolder.textView.setText(subTypeList.get(position).getVtName());
         }
         super.onBindViewHolder(holder, position);

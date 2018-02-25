@@ -1,6 +1,8 @@
 package com.example.admin.dreammediatechapp.Entities;
 
-public class Video {
+import java.io.Serializable;
+
+public class Video  implements Serializable {
 	private int vId;
 	private String vTitle;
 	private String vIntroduce;

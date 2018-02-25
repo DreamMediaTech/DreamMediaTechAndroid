@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements
         if (getSupportActionBar() != null){
             getSupportActionBar().hide();
         }
-
         permissionCheck();
         initData();
 
